@@ -3,11 +3,12 @@ import { ObjectId } from "mongodb";
 export type Category = {
     id?: ObjectId;
     name: string;
+    slug?: string;
     imageUrl?: string;
 }
 
 export type Product = {
-    id?: string;
+    id?: ObjectId;
     name: string;
     category?: Category;
     categoryId?: ObjectId;
@@ -15,3 +16,11 @@ export type Product = {
     ingredients?: string;
     imageUrl?: string;
 }
+
+
+export type OrderState = {
+    id?: ObjectId;
+    name: string;
+    cssBadgeClass?: string;
+    deleted?: boolean;
+};
