@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 
-import type { Category } from "@shared/types/category"
+import type { Category } from "@shared/types"
 
 var category: Category = {
     name: "Ciao"
