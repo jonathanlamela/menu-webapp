@@ -1,6 +1,11 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 
+import type { Category } from "@shared/types/category"
+
+var category: Category = {
+    name: "Ciao"
+}
 
 // configures dotenv to work in your application
 dotenv.config();
