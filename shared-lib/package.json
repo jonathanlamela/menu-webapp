@@ -1,0 +1,17 @@
+{
+  "name": "shared-lib",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts"
+}
