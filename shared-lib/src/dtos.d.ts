@@ -1,3 +1,4 @@
+import { Category } from "types";
 
 export type CreateCategoryRequest = {
     name: string;
@@ -9,4 +10,15 @@ export type UpdateCategoryRequest = {
     image?: Express.Multer.File;
 }
 
+export type FindCategoryRequest = {
+    orderBy?: string;
+    ascending?: boolean;
+    search?: string;
+    deleted?: boolean;
+    paginated?: boolean;
+    page?: number;
+    perPage?: number;
+}
 
+
+export type CategoryWithoutDelete = Omit<Category, "deleted">;

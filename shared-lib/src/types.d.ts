@@ -5,6 +5,7 @@ export type Category = {
     name: string;
     slug?: string;
     imageUrl?: string;
+    deleted?: boolean;
 }
 
 export type Product = {

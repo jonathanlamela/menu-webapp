@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "../utils/db"
 
-import type { CreateCategoryRequest, UpdateCategoryRequest } from "@shared/dtos"
+import type { CreateCategoryRequest, FindCategoryRequest, UpdateCategoryRequest } from "@shared/dtos"
 import slugify from "slugify";
 import { Category } from "@shared/types";
 import path from "path";
@@ -20,6 +20,7 @@ export default class CategoryService {
         //Create the category
         const documentCreated = await db.collection<Category>("categories").insertOne({
             name: data.name,
+            deleted: false,
             slug: slugify(data.name, {
                 lower: true
             })
@@ -130,21 +131,14 @@ export default class CategoryService {
         //Get db connection
         const db = await getDb();
 
-        var category = await this.getById(id)
-
         //Create the category
-        const documentDeleted = await db.collection<Category>("categories").deleteOne({
+        await db.collection<Category>("categories").updateOne({
             _id: id
-        });
-
-        if (documentDeleted) {
-            //Delete image if exists
-            if (category?.imageUrl) {
-                fs.unlinkSync(path.join(process.cwd(), category.imageUrl))
+        }, {
+            $set: {
+                deleted: true
             }
-        } else {
-            throw Error('unable to delete category')
-        }
+        });
 
     }
 
@@ -172,7 +166,59 @@ export default class CategoryService {
         return category;
     }
 
-    find() {
+    async find(params: FindCategoryRequest) {
+        const db = await getDb();
+        const collection = db.collection<Category>("categories"); // usa il tipo completo per leggere anche "deleted"
+        const sort: any = {};
 
+        if (params.orderBy === "id") {
+            sort._id = params.ascending ? 1 : -1;
+        } else if (params.orderBy === "name") {
+            sort.name = params.ascending ? 1 : -1;
+        }
+
+        const query: any = {};
+
+        if (params.search && params.search !== "") {
+            query.name = { $regex: params.search, $options: "i" }; // case-insensitive
+        }
+
+        if (!params.deleted) {
+            query.deleted = false;
+        }
+
+        const count = await collection.countDocuments(query);
+
+        if (params.paginated) {
+            const skip = (params.page! - 1) * params.perPage!;
+            const limit = params.perPage!;
+
+            let items = await collection.find(query).sort(sort).skip(skip).limit(limit).toArray();
+
+            if (!params.deleted) {
+                items = items.map(({ deleted, ...rest }) => rest);
+            }
+
+            const totalPages = Math.ceil(count / params.perPage!);
+            const currentPage = params.page!;
+
+            return {
+                items,
+                count,
+                page: currentPage,
+                totalPages,
+            };
+        } else {
+            let items = await collection.find(query).sort(sort).toArray();
+
+            if (!params.deleted) {
+                items = items.map(({ deleted, ...rest }) => rest);
+            }
+
+            return {
+                items,
+                count,
+            };
+        }
     }
 }

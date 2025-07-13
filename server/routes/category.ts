@@ -1,4 +1,4 @@
-import { CreateCategoryRequest, UpdateCategoryRequest } from "@shared/dtos";
+import { CreateCategoryRequest, FindCategoryRequest, UpdateCategoryRequest } from "@shared/dtos";
 import express, { Request, Response } from "express";
 import CategoryService from "../services/category";
 import validateRequest from "../utils/validateRequest";
@@ -8,6 +8,39 @@ import { ObjectId } from "mongodb";
 const categoryRoutes = express.Router()
 const multer = require('multer');
 const upload = multer();
+
+categoryRoutes.get("/", async (request: Request, response: Response) => {
+    const categoryService = new CategoryService();
+    try {
+        const {
+            orderBy = "id",
+            ascending = "false",
+            search = "",
+            deleted = "false",
+            paginated = "true",
+            page = "1",
+            perPage = "10",
+        } = request.query;
+
+        const params: FindCategoryRequest = {
+            orderBy: orderBy as string,
+            ascending: ascending === "true",
+            search: search as string,
+            deleted: deleted === "true",
+            paginated: paginated === "true",
+            page: parseInt(page as string),
+            perPage: parseInt(perPage as string),
+        }
+
+        const result = await categoryService.find(params);
+
+        response.status(200).json({ status: "success", params: params, ...result });
+    } catch (err) {
+        console.error(err);
+        response.status(400).json({ status: "error", message: "Unable to fetch categories" });
+    }
+});
+
 
 categoryRoutes.get("/:id", async (request: Request, response: Response) => {
     //Create category
