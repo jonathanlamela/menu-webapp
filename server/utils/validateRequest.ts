@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import * as yup from "yup";
 
 const validateRequest = (schema: yup.Schema) => async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body);
     try {
         await schema.validate({
             body: req.body,

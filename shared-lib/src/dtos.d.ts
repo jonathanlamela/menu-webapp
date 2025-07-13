@@ -5,6 +5,8 @@ export type CreateCategoryRequest = {
 }
 
 export type UpdateCategoryRequest = {
-    name?: string;
-    imageUrl?: string;
+    name: string;
+    image?: Express.Multer.File;
 }
+
+
