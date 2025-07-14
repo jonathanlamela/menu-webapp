@@ -1,9 +1,9 @@
-import { CreateCategoryRequest, FindCategoryRequest, UpdateCategoryRequest } from "@shared/dtos";
 import express, { Request, Response } from "express";
 import CategoryService from "../services/category";
 import validateRequest from "../utils/validateRequest";
 import { postCategory, putCategory } from "../validators/bodyValidators";
 import { ObjectId } from "mongodb";
+import { FindCategoryRequest, CreateCategoryRequest, UpdateCategoryRequest } from "@shared/dtos/category";
 
 const categoryRoutes = express.Router()
 const multer = require('multer');
@@ -32,9 +32,7 @@ categoryRoutes.get("/", async (request: Request, response: Response) => {
             perPage: parseInt(perPage as string),
         }
 
-        const result = await categoryService.find(params);
-
-        response.status(200).json({ status: "success", params: params, ...result });
+        response.status(200).json(await categoryService.find(params));
     } catch (err) {
         console.error(err);
         response.status(400).json({ status: "error", message: "Unable to fetch categories" });

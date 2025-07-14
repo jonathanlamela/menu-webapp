@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 import ProductService from "../services/product";
-import { CreateProductRequest, FindProductRequest } from "@shared/dtos";
 import { ObjectId } from "mongodb";
 import validateRequest from "../utils/validateRequest";
 import { postProduct, putProduct } from "../validators/bodyValidators";
+import { FindProductRequest, CreateProductRequest } from "@shared/dtos/product";
 
 const productRoutes = express.Router()
 
@@ -30,9 +30,7 @@ productRoutes.get("/", async (request: Request, response: Response) => {
             perPage: parseInt(perPage as string),
         }
 
-        const result = await service.find(params);
-
-        response.status(200).json({ status: "success", params: params, ...result });
+        response.status(200).json(await service.find(params));
     } catch (err) {
         console.error(err);
         response.status(400).json({ status: "error", message: "Unable to fetch products" });

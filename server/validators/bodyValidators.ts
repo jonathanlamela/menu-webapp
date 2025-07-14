@@ -43,3 +43,26 @@ export const putProduct = yup.object({
     id: yup.string().required()
   })
 }).required();
+
+export const postCarrier = yup.object({
+  body: yup.object({
+    name: yup.string().required(),
+    costs: yup.number().typeError("invalid number").required().min(
+      0.00,
+      "costs should be >= 0.00",
+    ),
+  }),
+}).required();
+
+export const putCarrier = yup.object({
+  body: yup.object({
+    name: yup.string().min(1, "name should be at least 1 character").required(),
+    costs: yup.number().typeError("invalid number").min(
+      0.00,
+      "costs should be >= 0.00",
+    ),
+  }),
+  params: yup.object({
+    id: yup.string().required()
+  })
+}).required();

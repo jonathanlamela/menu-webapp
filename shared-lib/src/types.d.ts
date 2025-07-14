@@ -11,7 +11,6 @@ export type Category = {
 export type Product = {
     id?: ObjectId;
     name: string;
-    category?: Category;
     categoryId?: ObjectId;
     price: number;
     descriptionShort?: string;
@@ -24,3 +23,12 @@ export type OrderState = {
     badgeColor?: string;
     deleted?: boolean;
 };
+
+export type Carrier = {
+    id?: ObjectId;
+    name: string;
+    costs: number;
+    deleted?: boolean;
+};
+
+
