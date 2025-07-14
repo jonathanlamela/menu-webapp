@@ -1,8 +1,8 @@
 import app from "./app";
-import dotenv from "dotenv";
+import { loadEnv } from "./utils/functions";
 
 //Configure dotnev to use .env file
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
+loadEnv()
 
 //Retrieve the port from .env
 const PORT = process.env.PORT;

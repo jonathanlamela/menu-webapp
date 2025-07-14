@@ -80,7 +80,7 @@ categoryRoutes.post("/", upload.single("image"), validateRequest(postCategory), 
             data.image = request.file;
         }
         const serviceResponse = await categoryService.create(data);
-        response.status(200).json({ status: "success", ...serviceResponse });
+        response.status(201).json({ status: "success", ...serviceResponse });
     } catch (err) {
         logger.error("Error creating category", err);
         response.status(400).json({ status: "error" });
@@ -96,7 +96,7 @@ categoryRoutes.put("/:id", upload.single("image"), validateRequest(putCategory),
             data.image = request.file;
         }
         await categoryService.update(ObjectId.createFromHexString(request.params.id), data);
-        response.status(202).json({ status: "success" });
+        response.status(200).json({ status: "success" });
     } catch (err) {
         logger.error("Error updating category", err);
         response.status(400).json({ status: "error" });
@@ -107,7 +107,7 @@ categoryRoutes.delete("/:id", async (request: Request, response: Response) => {
     const categoryService = new CategoryService();
     try {
         await categoryService.delete(ObjectId.createFromHexString(request.params.id));
-        response.status(202).json({ status: "success" });
+        response.status(204).json({ status: "success" });
     } catch (err) {
         logger.error("Error deleting category", err);
         response.status(400).json({ status: "error" });
