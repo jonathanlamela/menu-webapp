@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "moduleResolution": "nodenext",
     "module": "nodenext",
+    "isolatedModules": true,
     "paths": {
       "@shared/*": ["../shared-lib/src/*"]
     }
