@@ -13,6 +13,11 @@ export type PaginationParams = {
     perPage: number;
 };
 
+export type GenericResponse = {
+    status?: string;
+    error?: string;
+}
+
 
 
 

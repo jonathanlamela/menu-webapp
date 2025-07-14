@@ -1,4 +1,4 @@
-import { PaginationParams } from "dtos/common";
+import { PaginationParams, GenericResponse } from "dtos/common";
 import { ObjectId } from "mongodb";
 import { OrderState } from "types";
 
@@ -6,28 +6,28 @@ import { OrderState } from "types";
 
 export type CreateOrderStateRequest = Omit<OrderState, "id" | "deleted">;
 export type UpdateOrderStateRequest = Partial<Omit<OrderState, "id" | "deleted">>;
-export type CreateOrderStateResponse = {
-    status: string;
+
+export type CreateOrderStateResponse = GenericResponse & {
     orderState: OrderState;
 };
-export type UpdateOrderStateResponse = {
-    status: string;
+
+export type UpdateOrderStateResponse = GenericResponse & {
     orderState: OrderState;
 };
-export type DeleteOrderStateResponse = {
-    status: string;
-};
+
+export type DeleteOrderStateResponse = GenericResponse;
+
 export type GetOrderStateByIdRequest = {
     orderStateId: ObjectId;
 };
-export type GetOrderStateByIdResponse = {
-    status: string;
+
+export type GetOrderStateByIdResponse = GenericResponse & {
     orderState: OrderState;
 };
 
 export type FindOrderStateRequest = PaginationParams;
-export type FindOrderStateResponse = {
-    status: string;
+
+export type FindOrderStateResponse = GenericResponse & {
     orderStates: OrderState[];
     params: FindOrderStateRequest;
 };

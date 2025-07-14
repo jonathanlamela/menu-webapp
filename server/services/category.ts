@@ -37,7 +37,7 @@ export default class CategoryService {
                 );
             }
 
-            return { id: _id, status: "success" }; // tipizzato come CreateCategoryResponse
+            return { id: _id, }; // tipizzato come CreateCategoryResponse
         } else {
             throw Error('unable to create category')
         }
@@ -71,7 +71,9 @@ export default class CategoryService {
                     { $set: { imageUrl: imagePath } }
                 );
             }
-            return { status: "success" }; // tipizzato come UpdateCategoryResponse
+            return {
+
+            }; // tipizzato come UpdateCategoryResponse
         } else {
             throw Error('unable to update category')
         }
@@ -83,19 +85,19 @@ export default class CategoryService {
             { _id: id },
             { $set: { deleted: true } }
         );
-        return { status: "success" }; // tipizzato come DeleteCategoryResponse
+        return {}; // tipizzato come DeleteCategoryResponse
     }
 
     async getById(id: ObjectId): Promise<GetCategoryResponse> {
         const db = await getDb();
         const category = await db.collection<Category>("categories").findOne({ _id: id });
-        return { category, status: "success" }; // tipizzato come GetCategoryResponse
+        return { category, }; // tipizzato come GetCategoryResponse
     }
 
     async getBySlug(slug: string): Promise<GetCategoryResponse> {
         const db = await getDb();
         const category = await db.collection<Category>("categories").findOne({ slug });
-        return { category, status: "success " }; // tipizzato come GetCategoryResponse
+        return { category }; // tipizzato come GetCategoryResponse
     }
 
     async find(params: FindCategoryRequest): Promise<FindCategoryResponse> {
@@ -135,8 +137,7 @@ export default class CategoryService {
                 count,
                 page: currentPage,
                 totalPages,
-                params,
-                status: "success"
+                params
             };
         } else {
             let categories = await collection.find(query).sort(sort).toArray();
@@ -147,7 +148,7 @@ export default class CategoryService {
                 categories,
                 count,
                 params,
-                status: "success"
+
             };
         }
     }

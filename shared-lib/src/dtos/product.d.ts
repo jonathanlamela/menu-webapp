@@ -1,4 +1,4 @@
-import { PaginationParams } from "dtos/common";
+import { PaginationParams, GenericResponse } from "dtos/common";
 import { ObjectId } from "mongodb";
 import { Product, Category } from "types";
 
@@ -30,39 +30,29 @@ export type FindProductRequest = PaginationParams;
 
 // RESPONSES
 
-export type CreateProductResponse = {
-    status: string;
+export type CreateProductResponse = GenericResponse & {
     product: Product;
 };
-export type UpdateProductResponse = {
-    status: string;
-};
-export type DeleteProductResponse = {
-    status: string;
-};
-export type GetProductByIdResponse = {
-    status: string;
+export type UpdateProductResponse = GenericResponse;
+export type DeleteProductResponse = GenericResponse;
+export type GetProductByIdResponse = GenericResponse & {
     product: ProductWithCategory;
 };
-export type GetProductsByCategorySlugResponse = {
-    status: string;
+export type GetProductsByCategorySlugResponse = GenericResponse & {
     products: ProductWithCategory[];
     params: GetProductsByCategorySlugParams;
     categorySlug: string;
 };
-export type GetProductsByCategoryIdResponse = {
-    status: string;
+export type GetProductsByCategoryIdResponse = GenericResponse & {
     products: ProductWithCategory[];
     params: GetProductsByCategoryIdParams;
     categoryId: ObjectId;
 };
-export type GetProductsResponse = {
-    status: string;
+export type GetProductsResponse = GenericResponse & {
     products: ProductWithCategory[];
     params: PaginationParams;
 };
-export type FindProductResponse = {
-    status: string;
+export type FindProductResponse = GenericResponse & {
     products: ProductWithCategory[];
     params: FindProductRequest;
     count: number;

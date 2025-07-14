@@ -30,98 +30,64 @@ carrierRoutes.get("/", async (request: Request, response: Response) => {
             perPage: parseInt(perPage as string),
         }
 
-        response.status(200).json(await service.find(params));
+        const serviceResponse = await service.find(params);
+        response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
         console.error(err);
-        response.status(400).json({ status: "error", message: "Unable to fetch categories" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
-
 
 carrierRoutes.get("/:id", async (request: Request, response: Response) => {
-    //Create carrier
-    var service = new CarrierService()
+    const service = new CarrierService();
     try {
-
-        //Create the carrier
-        var carrier = await service.getById(ObjectId.createFromHexString(request.params.id))
-
-        if (carrier) {
-            //Return response
-            response.status(200).json({ "status": "success", "carrier": carrier });
+        const serviceResponse = await service.getById(ObjectId.createFromHexString(request.params.id));
+        if (serviceResponse.carrier) {
+            response.status(200).json({ status: "success", ...serviceResponse });
         } else {
-            //Return response
-            response.status(404).json({ "status": "no carrier found" });
+            response.status(404).json({ status: "error", error: "No carrier found" });
         }
-
     } catch (err) {
-        response.status(400).json({ "status": "error" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
-
 });
-
-
 
 //TODO: Require user logged with admin role
 carrierRoutes.post("/", validateRequest(postCarrier), async (request: Request, response: Response) => {
-
-    //Map body to dtos
-    var data = request.body as CreateCarrierRequest;
-
-    //Create carrier
-    var service = new CarrierService()
+    const data = request.body as CreateCarrierRequest;
+    const service = new CarrierService();
     try {
-        //Create the carrier
-        var id = await service.create(data);
-
-        //Return response
-        response.status(200).json({ "status": "success", "message": "carrier created", "_id": id });
+        const serviceResponse = await service.create(data);
+        response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        console.log(err);
-        response.status(400).json({ "status": "error", "message": "unable to create carrier" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
 //TODO: Require user logged with admin role
 carrierRoutes.put("/:id", validateRequest(putCarrier), async (request: Request, response: Response) => {
-
-    //Map body to dtos
-    var data = request.body as UpdateCarrierRequest;
-
-    //Create carrier
-    var service = new CarrierService()
+    const data = request.body as UpdateCarrierRequest;
+    const service = new CarrierService();
     try {
-
-        //Inject the file in the data variable
         if (request.file) {
-            data.image = request.file
+            data.image = request.file;
         }
-
-        //Update the carrier
-        await service.update(ObjectId.createFromHexString(request.params.id), data);
-
-        //Return response
-        response.status(202).json({ "status": "success", "message": "carrier updated" });
+        const serviceResponse = await service.update(ObjectId.createFromHexString(request.params.id), data);
+        response.status(202).json({ status: "success", ...serviceResponse });
     } catch (err) {
         console.log(err);
-        response.status(400).json({ "status": "error", "message": "unable to update carrier" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
 carrierRoutes.delete("/:id", async (request: Request, response: Response) => {
-
-    //Create carrier
-    var service = new CarrierService()
+    const service = new CarrierService();
     try {
-
-        //Update the carrier
-        await service.delete(ObjectId.createFromHexString(request.params.id));
-
-        //Return response
-        response.status(202).json({ "status": "success", "message": "carrier deleted" });
+        const serviceResponse = await service.delete(ObjectId.createFromHexString(request.params.id));
+        response.status(202).json({ status: "success", ...serviceResponse });
     } catch (err) {
         console.log(err);
-        response.status(400).json({ "status": "error", "message": "unable to delete carrier" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 

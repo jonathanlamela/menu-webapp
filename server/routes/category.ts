@@ -32,125 +32,81 @@ categoryRoutes.get("/", async (request: Request, response: Response) => {
             perPage: parseInt(perPage as string),
         }
 
-        response.status(200).json(await categoryService.find(params));
+        const serviceResponse = await categoryService.find(params);
+        response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
         console.error(err);
-        response.status(400).json({ status: "error", message: "Unable to fetch categories" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
-
 categoryRoutes.get("/:id", async (request: Request, response: Response) => {
-    //Create category
-    var categoryService = new CategoryService()
+    const categoryService = new CategoryService();
     try {
-
-        //Create the category
-        var category = await categoryService.getById(ObjectId.createFromHexString(request.params.id))
-
-        if (category) {
-            //Return response
-            response.status(200).json({ "status": "success", "category": category });
+        const serviceResponse = await categoryService.getById(ObjectId.createFromHexString(request.params.id));
+        if (serviceResponse.category) {
+            response.status(200).json({ status: "success", ...serviceResponse });
         } else {
-            //Return response
-            response.status(404).json({ "status": "no category found" });
+            response.status(404).json({ status: "error", error: "no category found" });
         }
-
     } catch (err) {
-        response.status(400).json({ "status": "error" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
-
 });
 
 categoryRoutes.get("/bySlug/:slug", async (request: Request, response: Response) => {
-    //Create category
-    var categoryService = new CategoryService()
+    const categoryService = new CategoryService();
     try {
-
-        //Create the category
-        var category = await categoryService.getBySlug(request.params.slug)
-
-        if (category) {
-            //Return response
-            response.status(200).json({ "status": "success", "category": category });
+        const serviceResponse = await categoryService.getBySlug(request.params.slug);
+        if (serviceResponse.category) {
+            response.status(200).json({ status: "success", ...serviceResponse });
         } else {
-            //Return response
-            response.status(404).json({ "status": "no category found" });
+            response.status(404).json({ status: "error", error: "no category found" });
         }
-
     } catch (err) {
-        response.status(400).json({ "status": "error" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
-
 });
-
 
 //TODO: Require user logged with admin role
 categoryRoutes.post("/", upload.single("image"), validateRequest(postCategory), async (request: Request, response: Response) => {
-
-    //Map body to dtos
-    var data = request.body as CreateCategoryRequest;
-
-    //Create category
-    var categoryService = new CategoryService()
+    const data = request.body as CreateCategoryRequest;
+    const categoryService = new CategoryService();
     try {
-
-        //Inject the file in the data variable
         if (request.file) {
-            data.image = request.file
+            data.image = request.file;
         }
-
-        //Create the category
-        var id = await categoryService.create(data);
-
-        //Return response
-        response.status(200).json({ "status": "success", "message": "category created", "_id": id });
+        const serviceResponse = await categoryService.create(data);
+        response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
         console.log(err);
-        response.status(400).json({ "status": "error", "message": "unable to create category" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
 //TODO: Require user logged with admin role
 categoryRoutes.put("/:id", upload.single("image"), validateRequest(putCategory), async (request: Request, response: Response) => {
-
-    //Map body to dtos
-    var data = request.body as UpdateCategoryRequest;
-
-    //Create category
-    var categoryService = new CategoryService()
+    const data = request.body as UpdateCategoryRequest;
+    const categoryService = new CategoryService();
     try {
-
-        //Inject the file in the data variable
         if (request.file) {
-            data.image = request.file
+            data.image = request.file;
         }
-
-        //Update the category
-        await categoryService.update(ObjectId.createFromHexString(request.params.id), data);
-
-        //Return response
-        response.status(202).json({ "status": "success", "message": "category updated" });
+        const serviceResponse = await categoryService.update(ObjectId.createFromHexString(request.params.id), data);
+        response.status(202).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        console.log(err);
-        response.status(400).json({ "status": "error", "message": "unable to update category" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
 categoryRoutes.delete("/:id", async (request: Request, response: Response) => {
-
-    //Create category
-    var categoryService = new CategoryService()
+    const categoryService = new CategoryService();
     try {
-
-        //Update the category
-        await categoryService.delete(ObjectId.createFromHexString(request.params.id));
-
-        //Return response
-        response.status(202).json({ "status": "success", "message": "category deleted" });
+        const serviceResponse = await categoryService.delete(ObjectId.createFromHexString(request.params.id));
+        response.status(202).json({ status: "success", ...serviceResponse });
     } catch (err) {
         console.log(err);
-        response.status(400).json({ "status": "error", "message": "unable to delete category" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 

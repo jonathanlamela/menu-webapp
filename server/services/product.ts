@@ -143,7 +143,7 @@ export default class ProductService {
                 count,
                 page: currentPage,
                 totalPages,
-                status: "success",
+
             };
         } else {
             if (!params.deleted) {
@@ -153,7 +153,7 @@ export default class ProductService {
                 products,
                 count,
                 params,
-                status: "success"
+
             };
         }
     }
@@ -163,12 +163,7 @@ export default class ProductService {
         const db = await getDb();
         const category = await db.collection<Category>("categories").findOne({ slug: categorySlug });
         if (!category) {
-            return {
-                count: 0,
-                products: [],
-                params,
-                status: "invalid category",
-            };
+            throw Error('Category not found');
         }
 
         const query: any = {
@@ -225,7 +220,6 @@ export default class ProductService {
                 count,
                 page: currentPage,
                 totalPages,
-                status: "success",
             };
         } else {
 
@@ -233,7 +227,7 @@ export default class ProductService {
                 products,
                 count,
                 params,
-                status: "success"
+
             };
         }
     }

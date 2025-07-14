@@ -5,7 +5,7 @@ import validateRequest from "../utils/validators/validateRequest";
 import { postProduct, putProduct } from "../utils/validators/bodyValidators";
 import { FindProductRequest, CreateProductRequest } from "@shared/dtos/product";
 
-const productRoutes = express.Router()
+const productRoutes = express.Router();
 
 productRoutes.get("/", async (request: Request, response: Response) => {
     const service = new ProductService();
@@ -28,12 +28,13 @@ productRoutes.get("/", async (request: Request, response: Response) => {
             paginated: paginated === "true",
             page: parseInt(page as string),
             perPage: parseInt(perPage as string),
-        }
+        };
 
-        response.status(200).json(await service.find(params));
+        const result = await service.find(params);
+        response.status(200).json({ status: "success", ...result });
     } catch (err) {
         console.error(err);
-        response.status(400).json({ status: "error", message: "Unable to fetch products" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
@@ -46,11 +47,11 @@ productRoutes.get("/:id", async (request: Request, response: Response) => {
         if (product) {
             response.status(200).json({ status: "success", product });
         } else {
-            response.status(404).json({ status: "no product found" });
+            response.status(404).json({ status: "error", error: "No product found" });
         }
     } catch (err) {
         console.error(err);
-        response.status(400).json({ status: "error", message: "Unable to fetch product" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
@@ -71,10 +72,9 @@ productRoutes.get("/byCategorySlug/:categorySlug", async (request: Request, resp
         const products = await service.getByCategorySlug(categorySlug, params);
 
         response.status(200).json({ status: "success", products, params, categorySlug });
-
     } catch (err) {
         console.error(err);
-        response.status(400).json({ status: "error", message: "Unable to fetch products by category slug" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
@@ -87,7 +87,7 @@ productRoutes.post("/", validateRequest(postProduct), async (request: Request, r
         response.status(201).json({ status: "success", product: createdProduct });
     } catch (err) {
         console.error(err);
-        response.status(400).json({ status: "error", message: "Unable to create product" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
@@ -101,7 +101,7 @@ productRoutes.put("/:id", validateRequest(putProduct), async (request: Request, 
         response.status(200).json({ status: "success", product: updatedProduct });
     } catch (err) {
         console.error(err);
-        response.status(400).json({ status: "error", message: "Unable to update product" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 
@@ -109,12 +109,12 @@ productRoutes.delete("/:id", async (request: Request, response: Response) => {
     const service = new ProductService();
     try {
         const productId = request.params.id;
-        await service.delete(ObjectId.createFromHexString(productId));
+        const result = await service.delete(ObjectId.createFromHexString(productId));
 
-        response.status(204).send();
+        response.status(200).json({ status: "success", ...result });
     } catch (err) {
         console.error(err);
-        response.status(400).json({ status: "error", message: "Unable to delete product" });
+        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
     }
 });
 

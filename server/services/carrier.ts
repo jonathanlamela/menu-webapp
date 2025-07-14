@@ -16,7 +16,7 @@ export default class CarrierService {
 
         if (documentCreated.acknowledged) {
             const _id = documentCreated.insertedId;
-            return { id: _id, status: "success" } as CreateCarrierResponse;
+            return { id: _id } as CreateCarrierResponse;
         } else {
             throw Error('unable to create carrier');
         }
@@ -39,7 +39,7 @@ export default class CarrierService {
         );
 
         if (documentUpdated.acknowledged) {
-            return { status: "success" } as UpdateCarrierResponse;
+            return {} as UpdateCarrierResponse;
         } else {
             throw Error('unable to update carrier');
         }
@@ -51,13 +51,13 @@ export default class CarrierService {
             { _id: id },
             { $set: { deleted: true } }
         );
-        return { status: "success" } as DeleteCarrierResponse;
+        return {} as DeleteCarrierResponse;
     }
 
     async getById(id: ObjectId): Promise<GetCarrierByIdResponse> {
         const db = await getDb();
         const carrier = await db.collection<Carrier>("carriers").findOne({ _id: id });
-        return { carrier, status: "success" } as GetCarrierByIdResponse;
+        return { carrier } as GetCarrierByIdResponse;
     }
 
     async find(params: FindCarrierRequest): Promise<FindCarrierResponse> {
@@ -98,7 +98,7 @@ export default class CarrierService {
                 page: currentPage,
                 totalPages,
                 params,
-                status: "success"
+
             } as FindCarrierResponse;
         } else {
             let carriers = await collection.find(query).sort(sort).toArray();
@@ -109,7 +109,7 @@ export default class CarrierService {
                 carriers,
                 count,
                 params,
-                status: "success"
+
             } as FindCarrierResponse;
         }
     }

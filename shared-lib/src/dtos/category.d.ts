@@ -1,6 +1,8 @@
-import { PaginationParams } from "dtos/common";
+import { GenericResponse, PaginationParams } from "dtos/common";
 import { ObjectId } from "mongodb";
 import { Category } from "types";
+
+
 
 // Request types
 export type CreateCategoryRequest = Omit<Category, "id" | "slug" | "deleted"> & {
@@ -12,26 +14,18 @@ export type UpdateCategoryRequest = Partial<Omit<Category, "id" | "slug" | "dele
 export type FindCategoryRequest = PaginationParams;
 
 // Response types
-export type CreateCategoryResponse = {
-    status: string;
+export type CreateCategoryResponse = GenericResponse & {
     id: ObjectId;
 };
-export type UpdateCategoryResponse = {
-    status: string;
-};
-export type DeleteCategoryResponse = {
-    status: string;
-};
-export type GetCategoryByIdResponse = {
-    status: string;
+export type UpdateCategoryResponse = GenericResponse;
+export type DeleteCategoryResponse = GenericResponse;
+export type GetCategoryByIdResponse = GenericResponse & {
     category: Category;
 };
-export type GetCategoryResponse = {
-    status: string;
+export type GetCategoryResponse = GenericResponse & {
     category: Category;
 };
-export type FindCategoryResponse = {
-    status: string;
+export type FindCategoryResponse = GenericResponse & {
     categories: Category[];
     params: FindCategoryRequest;
     count: number;
