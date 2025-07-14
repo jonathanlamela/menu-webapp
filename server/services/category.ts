@@ -9,9 +9,6 @@ import fs from "fs";
 
 export default class CategoryService {
 
-    constructor() {
-    }
-
     async createCategory(data: CreateCategoryRequest): Promise<ObjectId> {
 
         //Get db connection
@@ -75,7 +72,7 @@ export default class CategoryService {
         //Get db connection
         const db = await getDb();
 
-        //Create the category
+        //Update the category
         const documentUpdated = await db.collection<Category>("categories").updateOne({
             _id: id
         }, {

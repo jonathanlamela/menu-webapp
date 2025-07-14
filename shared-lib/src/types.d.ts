@@ -14,14 +14,13 @@ export type Product = {
     category?: Category;
     categoryId?: ObjectId;
     price: number;
-    ingredients?: string;
-    imageUrl?: string;
+    descriptionShort?: string;
+    deleted?: boolean;
 }
-
 
 export type OrderState = {
     id?: ObjectId;
     name: string;
-    cssBadgeClass?: string;
+    badgeColor?: string;
     deleted?: boolean;
 };
