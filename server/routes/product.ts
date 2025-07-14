@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 import ProductService from "../services/product";
 import { ObjectId } from "mongodb";
-import validateRequest from "../utils/validateRequest";
-import { postProduct, putProduct } from "../validators/bodyValidators";
+import validateRequest from "../utils/validators/validateRequest";
+import { postProduct, putProduct } from "../utils/validators/bodyValidators";
 import { FindProductRequest, CreateProductRequest } from "@shared/dtos/product";
 
 const productRoutes = express.Router()

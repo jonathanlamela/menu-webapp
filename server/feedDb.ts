@@ -2,6 +2,6 @@ import CategoryService from "./services/category";
 
 
 var categoryService = new CategoryService()
-categoryService.createCategory({
+categoryService.create({
     name: "Pizze"
 })

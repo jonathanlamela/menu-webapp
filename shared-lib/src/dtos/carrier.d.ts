@@ -8,18 +8,16 @@ export type CreateCarrierRequest = Omit<Carrier, "id" | "deleted">;
 export type UpdateCarrierRequest = Partial<Omit<Carrier, "id" | "deleted">>;
 export type CreateCarrierResponse = {
     status: string;
-    carrier: Carrier;
+    id: ObjectId;
 };
 export type UpdateCarrierResponse = {
     status: string;
-    carrier: Carrier;
 };
+
 export type DeleteCarrierResponse = {
     status: string;
 };
-export type GetCarrierByIdRequest = {
-    carrierId: ObjectId;
-};
+
 export type GetCarrierByIdResponse = {
     status: string;
     carrier: Carrier;

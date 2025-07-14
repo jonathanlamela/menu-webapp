@@ -2,34 +2,16 @@ import { PaginationParams } from "dtos/common";
 import { ObjectId } from "mongodb";
 import { Product, Category } from "types";
 
-// Product
-
-export type CreateProductRequest = Omit<Product, "id" | "deleted">;
-export type UpdateProductRequest = Partial<Omit<Product, "id" | "deleted">>;
-export type CreateProductResponse = {
-    status: string;
-    product: Product;
-};
-export type UpdateProductResponse = {
-    status: string;
-    product: Product;
-};
-export type DeleteProductResponse = {
-    status: string;
-};
-export type GetProductByIdRequest = {
-    productId: ObjectId;
-};
-export type GetProductByIdResponse = {
-    status: string;
-    product: ProductWithCategory;
-};
+// ProductWithCategory
 export type ProductWithCategory = Product & {
     category?: Category;
 };
 
+// REQUESTS
 
-// Product by Category
+export type CreateProductRequest = Omit<Product, "id" | "deleted">;
+export type UpdateProductRequest = Partial<Omit<Product, "id" | "deleted">>;
+
 export type GetProductsByCategorySlugParams = PaginationParams & {
     categorySlug: string;
 };
@@ -44,6 +26,24 @@ export type GetProductsByCategoryIdRequest = {
     categoryId: ObjectId;
     params: GetProductsByCategoryIdParams;
 };
+export type FindProductRequest = PaginationParams;
+
+// RESPONSES
+
+export type CreateProductResponse = {
+    status: string;
+    product: Product;
+};
+export type UpdateProductResponse = {
+    status: string;
+};
+export type DeleteProductResponse = {
+    status: string;
+};
+export type GetProductByIdResponse = {
+    status: string;
+    product: ProductWithCategory;
+};
 export type GetProductsByCategorySlugResponse = {
     status: string;
     products: ProductWithCategory[];
@@ -56,16 +56,10 @@ export type GetProductsByCategoryIdResponse = {
     params: GetProductsByCategoryIdParams;
     categoryId: ObjectId;
 };
-
-// Products (generic)
 export type GetProductsResponse = {
     status: string;
     products: ProductWithCategory[];
     params: PaginationParams;
-};
-
-export type FindProductRequest = PaginationParams & {
-    categoryId?: ObjectId;
 };
 export type FindProductResponse = {
     status: string;

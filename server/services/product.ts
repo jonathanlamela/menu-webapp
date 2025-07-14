@@ -134,6 +134,9 @@ export default class ProductService {
         if (params.paginated) {
             const totalPages = Math.ceil(count / params.perPage!);
             const currentPage = params.page!;
+            if (!params.deleted) {
+                products = products.map(({ deleted, ...rest }) => rest);
+            }
             return {
                 params,
                 products,
@@ -143,6 +146,9 @@ export default class ProductService {
                 status: "success",
             };
         } else {
+            if (!params.deleted) {
+                products = products.map(({ deleted, ...rest }) => rest);
+            }
             return {
                 products,
                 count,
@@ -153,11 +159,16 @@ export default class ProductService {
     }
 
     // Get products by category slug with filtering, sorting, and pagination
-    async getByCategorySlug(categorySlug: string, params: FindProductRequest): Promise<Product[]> {
+    async getByCategorySlug(categorySlug: string, params: FindProductRequest): Promise<FindProductResponse> {
         const db = await getDb();
         const category = await db.collection<Category>("categories").findOne({ slug: categorySlug });
         if (!category) {
-            return [];
+            return {
+                count: 0,
+                products: [],
+                params,
+                status: "invalid category",
+            };
         }
 
         const query: any = {
@@ -183,28 +194,48 @@ export default class ProductService {
             sort.price = params.ascending ? 1 : -1;
         }
 
-        let items: ProductWithCategory[];
+        let products: ProductWithCategory[];
 
         if (params.paginated) {
             const skip = (params.page! - 1) * params.perPage!;
             const limit = params.perPage!;
-            items = await collection.find(query).sort(sort).skip(skip).limit(limit).toArray();
+            products = await collection.find(query).sort(sort).skip(skip).limit(limit).toArray();
         } else {
-            items = await collection.find(query).sort(sort).toArray();
+            products = await collection.find(query).sort(sort).toArray();
         }
 
         if (!params.deleted) {
-            items = items.map(({ deleted, ...rest }) => {
-                return rest as ProductWithCategory
-            });
+            products = products.map(({ deleted, ...rest }) => rest as ProductWithCategory);
         }
 
-        items = items.map(item => ({
+        products = products.map(item => ({
             ...item,
             category: { ...category, deleted: undefined }
         }));
 
-        return items;
+        const count = products.length;
+
+        if (params.paginated) {
+            const totalPages = Math.ceil(count / params.perPage!);
+            const currentPage = params.page!;
+
+            return {
+                params,
+                products,
+                count,
+                page: currentPage,
+                totalPages,
+                status: "success",
+            };
+        } else {
+
+            return {
+                products,
+                count,
+                params,
+                status: "success"
+            };
+        }
     }
 
     // Get a product by its ID

@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import CategoryService from "../services/category";
-import validateRequest from "../utils/validateRequest";
-import { postCategory, putCategory } from "../validators/bodyValidators";
+import validateRequest from "../utils/validators/validateRequest";
+import { postCategory, putCategory } from "../utils/validators/bodyValidators";
 import { ObjectId } from "mongodb";
 import { FindCategoryRequest, CreateCategoryRequest, UpdateCategoryRequest } from "@shared/dtos/category";
 
@@ -101,7 +101,7 @@ categoryRoutes.post("/", upload.single("image"), validateRequest(postCategory), 
         }
 
         //Create the category
-        var id = await categoryService.createCategory(data);
+        var id = await categoryService.create(data);
 
         //Return response
         response.status(200).json({ "status": "success", "message": "category created", "_id": id });
@@ -127,7 +127,7 @@ categoryRoutes.put("/:id", upload.single("image"), validateRequest(putCategory),
         }
 
         //Update the category
-        await categoryService.updateCategory(ObjectId.createFromHexString(request.params.id), data);
+        await categoryService.update(ObjectId.createFromHexString(request.params.id), data);
 
         //Return response
         response.status(202).json({ "status": "success", "message": "category updated" });
@@ -144,7 +144,7 @@ categoryRoutes.delete("/:id", async (request: Request, response: Response) => {
     try {
 
         //Update the category
-        await categoryService.deleteCategory(ObjectId.createFromHexString(request.params.id));
+        await categoryService.delete(ObjectId.createFromHexString(request.params.id));
 
         //Return response
         response.status(202).json({ "status": "success", "message": "category deleted" });

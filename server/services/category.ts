@@ -10,7 +10,7 @@ import { Category } from "@shared/types";
 
 export default class CategoryService {
 
-    async createCategory(data: CreateCategoryRequest): Promise<CreateCategoryResponse> {
+    async create(data: CreateCategoryRequest): Promise<CreateCategoryResponse> {
         const db = await getDb();
         const documentCreated = await db.collection<Category>("categories").insertOne({
             name: data.name,
@@ -43,7 +43,7 @@ export default class CategoryService {
         }
     }
 
-    async updateCategory(id: ObjectId, data: UpdateCategoryRequest): Promise<UpdateCategoryResponse> {
+    async update(id: ObjectId, data: UpdateCategoryRequest): Promise<UpdateCategoryResponse> {
         const db = await getDb();
         const documentUpdated = await db.collection<Category>("categories").updateOne(
             { _id: id },
@@ -71,13 +71,13 @@ export default class CategoryService {
                     { $set: { imageUrl: imagePath } }
                 );
             }
-            return { status: "success", id: id }; // tipizzato come UpdateCategoryResponse
+            return { status: "success" }; // tipizzato come UpdateCategoryResponse
         } else {
             throw Error('unable to update category')
         }
     }
 
-    async deleteCategory(id: ObjectId): Promise<DeleteCategoryResponse> {
+    async delete(id: ObjectId): Promise<DeleteCategoryResponse> {
         const db = await getDb();
         const result = await db.collection<Category>("categories").updateOne(
             { _id: id },
