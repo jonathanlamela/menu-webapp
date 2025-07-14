@@ -145,7 +145,6 @@ export default class CategoryService {
                 categories,
                 count,
                 params,
-
             };
         }
     }
