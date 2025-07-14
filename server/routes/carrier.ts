@@ -4,6 +4,7 @@ import CarrierService from "../services/carrier";
 import validateRequest from "../utils/validators/validateRequest";
 import { CreateCarrierRequest, FindCarrierRequest, UpdateCarrierRequest } from "@shared/dtos/carrier";
 import { postCarrier, putCarrier } from "../utils/validators/bodyValidators";
+import logger from "../utils/logger";
 
 const carrierRoutes = express.Router()
 
@@ -33,8 +34,8 @@ carrierRoutes.get("/", async (request: Request, response: Response) => {
         const serviceResponse = await service.find(params);
         response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        console.error(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error fetching carriers", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -48,7 +49,8 @@ carrierRoutes.get("/:id", async (request: Request, response: Response) => {
             response.status(404).json({ status: "error", error: "No carrier found" });
         }
     } catch (err) {
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error fetching carrier by ID", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -60,7 +62,8 @@ carrierRoutes.post("/", validateRequest(postCarrier), async (request: Request, r
         const serviceResponse = await service.create(data);
         response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error creating carrier", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -75,8 +78,8 @@ carrierRoutes.put("/:id", validateRequest(putCarrier), async (request: Request, 
         const serviceResponse = await service.update(ObjectId.createFromHexString(request.params.id), data);
         response.status(202).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        console.log(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error updating carrier", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -86,8 +89,8 @@ carrierRoutes.delete("/:id", async (request: Request, response: Response) => {
         const serviceResponse = await service.delete(ObjectId.createFromHexString(request.params.id));
         response.status(202).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        console.log(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error deleting carrier", err);
+        response.status(400).json({ status: "error" });
     }
 });
 

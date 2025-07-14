@@ -4,6 +4,7 @@ import validateRequest from "../utils/validators/validateRequest";
 import { postCategory, putCategory } from "../utils/validators/bodyValidators";
 import { ObjectId } from "mongodb";
 import { FindCategoryRequest, CreateCategoryRequest, UpdateCategoryRequest } from "@shared/dtos/category";
+import logger from "../utils/logger";
 
 const categoryRoutes = express.Router()
 const multer = require('multer');
@@ -35,8 +36,8 @@ categoryRoutes.get("/", async (request: Request, response: Response) => {
         const serviceResponse = await categoryService.find(params);
         response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        console.error(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error fetching categories", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -50,7 +51,8 @@ categoryRoutes.get("/:id", async (request: Request, response: Response) => {
             response.status(404).json({ status: "error", error: "no category found" });
         }
     } catch (err) {
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error fetching category by ID", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -64,7 +66,8 @@ categoryRoutes.get("/bySlug/:slug", async (request: Request, response: Response)
             response.status(404).json({ status: "error", error: "no category found" });
         }
     } catch (err) {
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error fetching category by slug", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -79,8 +82,8 @@ categoryRoutes.post("/", upload.single("image"), validateRequest(postCategory), 
         const serviceResponse = await categoryService.create(data);
         response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        console.log(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error creating category", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -95,7 +98,8 @@ categoryRoutes.put("/:id", upload.single("image"), validateRequest(putCategory),
         const serviceResponse = await categoryService.update(ObjectId.createFromHexString(request.params.id), data);
         response.status(202).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error updating category", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -105,8 +109,8 @@ categoryRoutes.delete("/:id", async (request: Request, response: Response) => {
         const serviceResponse = await categoryService.delete(ObjectId.createFromHexString(request.params.id));
         response.status(202).json({ status: "success", ...serviceResponse });
     } catch (err) {
-        console.log(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error deleting category", err);
+        response.status(400).json({ status: "error" });
     }
 });
 

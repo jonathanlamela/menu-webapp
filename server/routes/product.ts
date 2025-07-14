@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 import validateRequest from "../utils/validators/validateRequest";
 import { postProduct, putProduct } from "../utils/validators/bodyValidators";
 import { FindProductRequest, CreateProductRequest } from "@shared/dtos/product";
+import logger from "../utils/logger";
 
 const productRoutes = express.Router();
 
@@ -33,8 +34,8 @@ productRoutes.get("/", async (request: Request, response: Response) => {
         const result = await service.find(params);
         response.status(200).json({ status: "success", ...result });
     } catch (err) {
-        console.error(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error fetching products", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -50,8 +51,8 @@ productRoutes.get("/:id", async (request: Request, response: Response) => {
             response.status(404).json({ status: "error", error: "No product found" });
         }
     } catch (err) {
-        console.error(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error fetching product by ID", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -73,8 +74,8 @@ productRoutes.get("/byCategorySlug/:categorySlug", async (request: Request, resp
 
         response.status(200).json({ status: "success", products, params, categorySlug });
     } catch (err) {
-        console.error(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error fetching products by category slug", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -86,8 +87,8 @@ productRoutes.post("/", validateRequest(postProduct), async (request: Request, r
 
         response.status(201).json({ status: "success", product: createdProduct });
     } catch (err) {
-        console.error(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error creating product", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -100,8 +101,8 @@ productRoutes.put("/:id", validateRequest(putProduct), async (request: Request, 
 
         response.status(200).json({ status: "success", product: updatedProduct });
     } catch (err) {
-        console.error(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error updating product", err);
+        response.status(400).json({ status: "error" });
     }
 });
 
@@ -113,8 +114,8 @@ productRoutes.delete("/:id", async (request: Request, response: Response) => {
 
         response.status(200).json({ status: "success", ...result });
     } catch (err) {
-        console.error(err);
-        response.status(400).json({ status: "error", error: err instanceof Error ? err.message : String(err) });
+        logger.error("Error deleting product", err);
+        response.status(400).json({ status: "error" });
     }
 });
 

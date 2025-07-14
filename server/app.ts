@@ -36,5 +36,6 @@ app.use("/assets", express.static("assets"))
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 }).on("error", (error) => {
+
     throw new Error(error.message);
 });

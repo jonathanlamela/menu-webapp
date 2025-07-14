@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import * as yup from "yup";
 
 const validateRequest = (schema: yup.Schema) => async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body);
     try {
         await schema.validate({
             body: req.body,
@@ -20,7 +19,6 @@ const validateRequest = (schema: yup.Schema) => async (req: Request, res: Respon
                 details: err.message
             });
         }
-        console.log(err)
         return res.status(500).json({ "status": "error", "message": "see server logs" })
 
     }
