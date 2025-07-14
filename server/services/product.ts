@@ -7,7 +7,7 @@ import { Category, Product } from "@shared/types";
 export default class ProductService {
 
     // Create a new product
-    async create(model: CreateProductRequest): Promise<{ insertedId: ObjectId }> {
+    async create(model: CreateProductRequest): Promise<ObjectId> {
         const db = await getDb();
         const documentCreated = await db.collection<Product>("products").insertOne({
             name: model.name,
@@ -18,7 +18,7 @@ export default class ProductService {
         });
 
         if (documentCreated.acknowledged) {
-            return { insertedId: documentCreated.insertedId };
+            return documentCreated.insertedId;
         } else {
             throw Error('unable to create product');
         }

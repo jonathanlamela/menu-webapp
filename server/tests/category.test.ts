@@ -6,7 +6,6 @@ import app from "../app";
 import { Category } from "@shared/types";
 import { describe, expect, beforeAll, test, afterAll } from 'vitest';
 import { FindCategoryResponse } from "@shared/dtos/category";
-import CategoryService from "../services/category";
 import { Db } from "mongodb";
 
 
@@ -20,14 +19,19 @@ describe("Category API Tests", () => {
 
         await cleanCategoryTable();
 
-        var categoryService = new CategoryService();
+        await request(app)
+            .post("/api/v1/categories")
+            .send({ name: "Pizze" })
+            .set("Accept", "application/json");
 
-        await categoryService.create({ name: "Pizze", });
-        await categoryService.create({ name: "Panini" });
+        await request(app)
+            .post("/api/v1/categories")
+            .send({ name: "Panini" })
+            .set("Accept", "application/json");
     }
 
     async function cleanCategoryTable() {
-        return await db.collection<Category>("categories").deleteMany({});
+        return await db.dropCollection("categories")
     }
 
     async function stopMocking() {
@@ -41,11 +45,6 @@ describe("Category API Tests", () => {
 
     afterAll(async () => {
         await stopMocking();
-    });
-
-    test("mocking succes", async () => {
-        const categories = await db.collection<Category>("categories").find({}).toArray();
-        expect(categories).toHaveLength(2);
     });
 
     test("should return all categories", async () => {

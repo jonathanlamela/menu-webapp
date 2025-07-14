@@ -31,7 +31,7 @@ export type FindProductRequest = PaginationParams;
 // RESPONSES
 
 export type CreateProductResponse = GenericResponse & {
-    product: Product;
+    id: ObjectId;
 };
 export type UpdateProductResponse = GenericResponse;
 export type DeleteProductResponse = GenericResponse;
