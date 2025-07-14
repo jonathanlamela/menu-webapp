@@ -22,7 +22,7 @@ export default class CarrierService {
         }
     }
 
-    async update(id: ObjectId, data: UpdateCarrierRequest): Promise<UpdateCarrierResponse> {
+    async update(id: ObjectId, data: UpdateCarrierRequest) {
         const db = await getDb();
         // Costruisci dinamicamente i campi da aggiornare solo se non sono nulli
         const updateFields: Partial<Carrier> = {};
@@ -38,20 +38,17 @@ export default class CarrierService {
             { $set: updateFields }
         );
 
-        if (documentUpdated.acknowledged) {
-            return {} as UpdateCarrierResponse;
-        } else {
+        if (!documentUpdated.acknowledged || documentUpdated.modifiedCount === 0) {
             throw Error('unable to update carrier');
         }
     }
 
-    async delete(id: ObjectId): Promise<DeleteCarrierResponse> {
+    async delete(id: ObjectId) {
         const db = await getDb();
         await db.collection<Carrier>("carriers").updateOne(
             { _id: id },
             { $set: { deleted: true } }
         );
-        return {} as DeleteCarrierResponse;
     }
 
     async getById(id: ObjectId): Promise<GetCarrierByIdResponse> {

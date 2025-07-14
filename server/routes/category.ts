@@ -63,7 +63,7 @@ categoryRoutes.get("/bySlug/:slug", async (request: Request, response: Response)
         if (serviceResponse.category) {
             response.status(200).json({ status: "success", ...serviceResponse });
         } else {
-            response.status(404).json({ status: "error", error: "no category found" });
+            response.status(404).json({ status: "error" });
         }
     } catch (err) {
         logger.error("Error fetching category by slug", err);
@@ -95,8 +95,8 @@ categoryRoutes.put("/:id", upload.single("image"), validateRequest(putCategory),
         if (request.file) {
             data.image = request.file;
         }
-        const serviceResponse = await categoryService.update(ObjectId.createFromHexString(request.params.id), data);
-        response.status(202).json({ status: "success", ...serviceResponse });
+        await categoryService.update(ObjectId.createFromHexString(request.params.id), data);
+        response.status(202).json({ status: "success" });
     } catch (err) {
         logger.error("Error updating category", err);
         response.status(400).json({ status: "error" });
@@ -106,8 +106,8 @@ categoryRoutes.put("/:id", upload.single("image"), validateRequest(putCategory),
 categoryRoutes.delete("/:id", async (request: Request, response: Response) => {
     const categoryService = new CategoryService();
     try {
-        const serviceResponse = await categoryService.delete(ObjectId.createFromHexString(request.params.id));
-        response.status(202).json({ status: "success", ...serviceResponse });
+        await categoryService.delete(ObjectId.createFromHexString(request.params.id));
+        response.status(202).json({ status: "success" });
     } catch (err) {
         logger.error("Error deleting category", err);
         response.status(400).json({ status: "error" });

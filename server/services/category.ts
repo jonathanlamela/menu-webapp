@@ -43,7 +43,7 @@ export default class CategoryService {
         }
     }
 
-    async update(id: ObjectId, data: UpdateCategoryRequest): Promise<UpdateCategoryResponse> {
+    async update(id: ObjectId, data: UpdateCategoryRequest) {
         const db = await getDb();
         const documentUpdated = await db.collection<Category>("categories").updateOne(
             { _id: id },
@@ -71,21 +71,18 @@ export default class CategoryService {
                     { $set: { imageUrl: imagePath } }
                 );
             }
-            return {
-
-            }; // tipizzato come UpdateCategoryResponse
+            // tipizzato come UpdateCategoryResponse
         } else {
             throw Error('unable to update category')
         }
     }
 
-    async delete(id: ObjectId): Promise<DeleteCategoryResponse> {
+    async delete(id: ObjectId) {
         const db = await getDb();
         const result = await db.collection<Category>("categories").updateOne(
             { _id: id },
             { $set: { deleted: true } }
         );
-        return {}; // tipizzato come DeleteCategoryResponse
     }
 
     async getById(id: ObjectId): Promise<GetCategoryResponse> {

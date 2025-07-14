@@ -48,7 +48,7 @@ productRoutes.get("/:id", async (request: Request, response: Response) => {
         if (product) {
             response.status(200).json({ status: "success", product });
         } else {
-            response.status(404).json({ status: "error", error: "No product found" });
+            response.status(404).json({ status: "error" });
         }
     } catch (err) {
         logger.error("Error fetching product by ID", err);
@@ -112,7 +112,7 @@ productRoutes.delete("/:id", async (request: Request, response: Response) => {
         const productId = request.params.id;
         const result = await service.delete(ObjectId.createFromHexString(productId));
 
-        response.status(200).json({ status: "success", ...result });
+        response.status(200).json({ status: "success" });
     } catch (err) {
         logger.error("Error deleting product", err);
         response.status(400).json({ status: "error" });

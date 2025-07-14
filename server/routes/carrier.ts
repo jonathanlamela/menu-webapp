@@ -46,7 +46,7 @@ carrierRoutes.get("/:id", async (request: Request, response: Response) => {
         if (serviceResponse.carrier) {
             response.status(200).json({ status: "success", ...serviceResponse });
         } else {
-            response.status(404).json({ status: "error", error: "No carrier found" });
+            response.status(404).json({ status: "error" });
         }
     } catch (err) {
         logger.error("Error fetching carrier by ID", err);
@@ -75,8 +75,8 @@ carrierRoutes.put("/:id", validateRequest(putCarrier), async (request: Request, 
         if (request.file) {
             data.image = request.file;
         }
-        const serviceResponse = await service.update(ObjectId.createFromHexString(request.params.id), data);
-        response.status(202).json({ status: "success", ...serviceResponse });
+        await service.update(ObjectId.createFromHexString(request.params.id), data);
+        response.status(202).json({ status: "success" });
     } catch (err) {
         logger.error("Error updating carrier", err);
         response.status(400).json({ status: "error" });
@@ -86,8 +86,8 @@ carrierRoutes.put("/:id", validateRequest(putCarrier), async (request: Request, 
 carrierRoutes.delete("/:id", async (request: Request, response: Response) => {
     const service = new CarrierService();
     try {
-        const serviceResponse = await service.delete(ObjectId.createFromHexString(request.params.id));
-        response.status(202).json({ status: "success", ...serviceResponse });
+        await service.delete(ObjectId.createFromHexString(request.params.id));
+        response.status(202).json({ status: "success" });
     } catch (err) {
         logger.error("Error deleting carrier", err);
         response.status(400).json({ status: "error" });

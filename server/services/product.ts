@@ -25,7 +25,7 @@ export default class ProductService {
     }
 
     // Update an existing product by ID
-    async update(id: ObjectId, model: UpdateProductRequest): Promise<{ acknowledged: boolean }> {
+    async update(id: ObjectId, model: UpdateProductRequest) {
         const db = await getDb();
         const updateFields: Partial<UpdateProductRequest> = {};
         if (model.name != null) updateFields.name = model.name;
@@ -38,14 +38,13 @@ export default class ProductService {
             { $set: updateFields }
         );
 
-        if (!documentUpdated.acknowledged) {
+        if (!documentUpdated.acknowledged || documentUpdated.modifiedCount === 0) {
             throw Error('unable to update product');
         }
-        return { acknowledged: true };
     }
 
     // Soft-delete a product by setting deleted to true
-    async delete(id: ObjectId): Promise<{ acknowledged: boolean }> {
+    async delete(id: ObjectId) {
         const db = await getDb();
         const documentDeleted = await db.collection<Product>("products").updateOne({
             _id: id
@@ -54,11 +53,6 @@ export default class ProductService {
                 deleted: true
             }
         });
-
-        if (!documentDeleted.acknowledged) {
-            throw Error('unable to delete product');
-        }
-        return { acknowledged: true };
     }
 
     // Find products with filtering, sorting, and pagination
