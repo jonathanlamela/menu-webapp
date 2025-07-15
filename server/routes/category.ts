@@ -37,6 +37,7 @@ categoryRoutes.get("/",
                 paginated: String(paginated) === "true",
                 page: parseInt(page as string),
                 perPage: parseInt(perPage as string),
+                slug: request.query.slug
             }
 
             const serviceResponse = await categoryService.find(params);
@@ -66,24 +67,6 @@ categoryRoutes.get("/:id",
         }
     });
 
-categoryRoutes.get("/bySlug/:slug",
-    async (
-        request: TypedRequest<{}, {}, { slug: string }>,
-        response: TypedResponse<GetCategoryResponse>
-    ) => {
-        const categoryService = new CategoryService();
-        try {
-            const serviceResponse = await categoryService.getBySlug(request.params.slug);
-            if (serviceResponse.category) {
-                response.status(200).json({ status: "success", ...serviceResponse });
-            } else {
-                response.status(404).json({ status: "error" });
-            }
-        } catch (err) {
-            logger.error("Error fetching category by slug", err);
-            response.status(400).json({ status: "error" });
-        }
-    });
 
 //TODO: Require user logged with admin role
 categoryRoutes.post("/", upload.single("image"), validateRequest(postCategory),

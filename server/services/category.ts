@@ -91,12 +91,6 @@ export default class CategoryService {
         return { category }; // tipizzato come GetCategoryResponse
     }
 
-    async getBySlug(slug: string): Promise<GetCategoryResponse> {
-        const db = await getDb();
-        const category = await db.collection<Category>("categories").findOne({ slug });
-        return { category }; // tipizzato come GetCategoryResponse
-    }
-
     async find(params: FindCategoryRequest): Promise<FindCategoryResponse> {
         const db = await getDb();
         const collection = db.collection<Category>("categories");
@@ -112,6 +106,10 @@ export default class CategoryService {
 
         if (params.search && params.search !== "") {
             query.name = { $regex: params.search, $options: "i" };
+        }
+
+        if (params.slug) {
+            query.slug = params.slug;
         }
 
         if (!params.deleted) {

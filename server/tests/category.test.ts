@@ -4,48 +4,14 @@ const request = require("supertest")
 import app from "../app";
 
 import { Category } from "shared/types";
-import { describe, expect, beforeAll, test, afterAll } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { FindCategoryResponse } from "shared/dtos/category";
-import { Db } from "mongodb";
 
 
 
 describe("Category API Tests", () => {
 
-    let db: Db;
 
-
-    async function startMocking() {
-
-        await cleanCategoryTable();
-
-        await request(app)
-            .post("/api/v1/categories")
-            .send({ name: "Pizze" })
-            .set("Accept", "application/json");
-
-        await request(app)
-            .post("/api/v1/categories")
-            .send({ name: "Panini" })
-            .set("Accept", "application/json");
-    }
-
-    async function cleanCategoryTable() {
-        return await db.dropCollection("categories")
-    }
-
-    async function stopMocking() {
-        return cleanCategoryTable();
-    }
-
-    beforeAll(async () => {
-        db = await getDb();
-        await startMocking();
-    });
-
-    afterAll(async () => {
-        await stopMocking();
-    });
 
     test("should return all categories", async () => {
         const response = await request(app)
@@ -71,8 +37,13 @@ describe("Category API Tests", () => {
     });
 
     test("should get a category by id", async () => {
-        const category = await db.collection<Category>("categories").findOne({});
-        const id = category?._id;
+        const responseAll = await request(app)
+            .get("/api/v1/categories")
+            .set("Accept", "application/json");
+
+        const categories: Category[] = responseAll.body.categories;
+        const category = categories[0];
+        const id = category._id;
 
         const response = await request(app)
             .get(`/api/v1/categories/${id}`)
@@ -83,8 +54,26 @@ describe("Category API Tests", () => {
         expect(response.body.category.name).toBe(category?.name);
     });
 
+
+    test("should get a category slug", async () => {
+
+        const response = await request(app)
+            .get(`/api/v1/categories?slug=pizze`)
+            .set("Accept", "application/json");
+
+        var responseBody: FindCategoryResponse = response.body;
+
+        expect(response.statusCode).toBe(200);
+        expect(responseBody.categories).toHaveLength(1);
+    });
+
     test("should update a category by id", async () => {
-        const category = await db.collection<Category>("categories").findOne({});
+        const responseAll = await request(app)
+            .get("/api/v1/categories")
+            .set("Accept", "application/json");
+
+        const categories: Category[] = responseAll.body.categories;
+        const category = categories[0];
         const id = category?._id;
 
         const updatedData = { name: category?.name };

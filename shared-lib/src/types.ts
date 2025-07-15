@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 export type Category = {
-    id?: ObjectId;
+    _id?: ObjectId;
     name: string;
     slug?: string;
     imageUrl?: string;
@@ -9,7 +9,7 @@ export type Category = {
 }
 
 export type Product = {
-    id?: ObjectId;
+    _id?: ObjectId;
     name: string;
     categoryId?: ObjectId;
     price: number;
@@ -18,14 +18,14 @@ export type Product = {
 }
 
 export type OrderState = {
-    id?: ObjectId;
+    _id?: ObjectId;
     name: string;
     badgeColor?: string;
     deleted?: boolean;
 };
 
 export type Carrier = {
-    id?: ObjectId;
+    _id?: ObjectId;
     name: string;
     costs: number;
     deleted?: boolean;

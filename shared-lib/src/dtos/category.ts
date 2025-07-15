@@ -13,7 +13,9 @@ export type CreateCategoryRequest = CategoryDTO & {
 export type UpdateCategoryRequest = CategoryDTO & {
     image?: Express.Multer.File;
 };
-export type FindCategoryRequest = PaginationParams;
+export type FindCategoryRequest = {
+    slug?: string;
+} & PaginationParams;
 
 // Response types
 export type CreateCategoryResponse = GenericResponse & {

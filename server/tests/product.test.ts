@@ -1,88 +1,25 @@
-import { getDb } from "../utils/db";
 
 const request = require("supertest")
 import app from "../app";
 
-import { describe, expect, beforeAll, test, afterAll } from 'vitest';
-import { Db, ObjectId } from "mongodb";
+import { describe, expect, test } from 'vitest';
 import { Response } from "supertest";
 import { Product } from "shared/types";
 import { CreateProductResponse, GetProductByIdResponse, GetProductsResponse } from "shared/dtos/product";
-import { CreateCategoryResponse } from "shared/dtos/category";
 
 
 describe("Product API Tests", () => {
-
-    let db: Db;
-    let pizzeCategoryId: ObjectId;
-    let paniniCategoryId: ObjectId;
-
-    async function startMocking() {
-        await cleanCategoryTable();
-        await cleanProductTable();
-
-        // Crea la categoria "Pizze" e salva l'id globale
-        const pizzeRes: Response = await request(app)
-            .post("/api/v1/categories")
-            .send({ name: "Pizze" })
-            .set("Accept", "application/json");
-        var requestResponse = pizzeRes.body as CreateCategoryResponse;
-        pizzeCategoryId = requestResponse.id!;
-
-        // Crea la categoria "Panini" e salva l'id globale
-        const paniniRes: Response = await request(app)
-            .post("/api/v1/categories")
-            .send({ name: "Panini" })
-            .set("Accept", "application/json");
-        var requestResponse = paniniRes.body as CreateCategoryResponse;
-        paniniCategoryId = requestResponse.id!;
-
-        await request(app)
-            .post("/api/v1/products")
-            .send({
-                name: "Diavola",
-                price: 9.5,
-                categoryId: pizzeCategoryId,
-                descriptionShort: "Piccante"
-            })
-            .set("Accept", "application/json");
-
-        await request(app)
-            .post("/api/v1/products")
-            .send({
-                name: "Panino Classico",
-                price: 6,
-                categoryId: paniniCategoryId,
-                descriptionShort: "Prosciutto e formaggio"
-            })
-            .set("Accept", "application/json");
-    }
-
-    async function cleanCategoryTable() {
-        try { await db.dropCollection("categories"); } catch { }
-    }
-
-    async function cleanProductTable() {
-        try { await db.dropCollection("products"); } catch { }
-    }
-
-    async function stopMocking() {
-        await cleanProductTable();
-        await cleanCategoryTable();
-    }
-
-    beforeAll(async () => {
-        db = await getDb();
-        await startMocking();
-    });
-
-    afterAll(async () => {
-        await stopMocking();
-    });
-
     // --- PRODUCT TESTS ---
 
     test("should create a new product", async () => {
+
+        const categoryRes: Response = await request(app)
+            .get("/api/v1/categories?slug=pizze")
+            .set("Accept", "application/json");
+        const pizzeCategory = categoryRes.body.categories?.[0];
+        const pizzeCategoryId = pizzeCategory?._id;
+        expect(pizzeCategoryId).toBeDefined();
+
         const newProduct = {
             name: "Margherita",
             price: 8.5,
@@ -127,6 +64,15 @@ describe("Product API Tests", () => {
     });
 
     test("should get a product by id", async () => {
+
+
+        const categoryRes: Response = await request(app)
+            .get("/api/v1/categories?slug=pizze")
+            .set("Accept", "application/json");
+        const pizzeCategory = categoryRes.body.categories?.[0];
+        const pizzeCategoryId = pizzeCategory?._id;
+        expect(pizzeCategoryId).toBeDefined();
+
         const newProduct = {
             name: "Capricciosa",
             price: 10,
@@ -152,6 +98,13 @@ describe("Product API Tests", () => {
     });
 
     test("should update a product by id", async () => {
+        const categoryRes: Response = await request(app)
+            .get("/api/v1/categories?slug=pizze")
+            .set("Accept", "application/json");
+        const pizzeCategory = categoryRes.body.categories?.[0];
+        const pizzeCategoryId = pizzeCategory?._id;
+        expect(pizzeCategoryId).toBeDefined();
+
         const newProduct = {
             name: "Bufala",
             price: 11,
@@ -176,6 +129,13 @@ describe("Product API Tests", () => {
     });
 
     test("should soft-delete a product by id", async () => {
+        const categoryRes: Response = await request(app)
+            .get("/api/v1/categories?slug=pizze")
+            .set("Accept", "application/json");
+        const pizzeCategory = categoryRes.body.categories?.[0];
+        const pizzeCategoryId = pizzeCategory?._id;
+        expect(pizzeCategoryId).toBeDefined();
+
         const newProduct = {
             name: "Vegetariana",
             price: 9,
@@ -204,7 +164,7 @@ describe("Product API Tests", () => {
 
     test("should get products by category slug", async () => {
         const response: Response = await request(app)
-            .get(`/api/v1/products/?categorySlug=pizze`)
+            .get(`/api/v1/products?categorySlug=pizze`)
             .set("Accept", "application/json");
 
         const body = response.body as GetProductsResponse;
@@ -215,6 +175,13 @@ describe("Product API Tests", () => {
     });
 
     test("should search products by name", async () => {
+        const categoryRes: Response = await request(app)
+            .get("/api/v1/categories?slug=pizze")
+            .set("Accept", "application/json");
+        const pizzeCategory = categoryRes.body.categories?.[0];
+        const pizzeCategoryId = pizzeCategory?._id;
+        expect(pizzeCategoryId).toBeDefined();
+
         const newProduct = {
             name: "Quattro Formaggi",
             price: 10,
