@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "../utils/db"
-import { CreateProductRequest, UpdateProductRequest, FindProductRequest, FindProductResponse, ProductWithCategory } from "@shared/dtos/product";
-import { Category, Product } from "@shared/types";
+import { CreateProductRequest, UpdateProductRequest, FindProductRequest, FindProductResponse, ProductWithCategory } from "shared/dtos/product";
+import { Category, Product } from "shared/types";
 
 // Service class for handling product-related operations
 export default class ProductService {
@@ -12,7 +12,7 @@ export default class ProductService {
         const documentCreated = await db.collection<Product>("products").insertOne({
             name: model.name,
             price: model.price,
-            categoryId: ObjectId.createFromHexString(model.categoryId),
+            categoryId: ObjectId.createFromHexString(model.categoryId!.toString()),
             descriptionShort: model.descriptionShort,
             deleted: false,
         });
@@ -30,7 +30,7 @@ export default class ProductService {
         const updateFields: Partial<UpdateProductRequest> = {};
         if (model.name != null) updateFields.name = model.name;
         if (model.price != null) updateFields.price = model.price;
-        if (model.categoryId != null) updateFields.categoryId = ObjectId.createFromHexString(model.categoryId);
+        if (model.categoryId != null) updateFields.categoryId = ObjectId.createFromHexString(model.categoryId.toString());
         if (model.descriptionShort != null) updateFields.descriptionShort = model.descriptionShort;
 
         const documentUpdated = await db.collection<Product>("products").updateOne(

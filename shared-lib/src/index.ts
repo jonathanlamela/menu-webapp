@@ -1,2 +1,6 @@
 export * from './types'
 export * from './dtos/common'
+export * from './dtos/carrier'
+export * from './dtos/category'
+export * from './dtos/orderState'
+export * from './dtos/product'

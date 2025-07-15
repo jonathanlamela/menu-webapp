@@ -1,1 +1,4 @@
-{}
+{
+  "typescript.tsserver.log": "verbose",
+  "typescript.tsserver.maxTsServerMemory": 3072
+}

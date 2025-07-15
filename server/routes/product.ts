@@ -15,7 +15,7 @@ import {
     UpdateProductRequest,
     UpdateProductResponse,
     DeleteProductResponse,
-} from "@shared/dtos/product";
+} from "shared/dtos/product";
 
 const productRoutes = express.Router();
 
@@ -30,25 +30,26 @@ productRoutes.get(
         try {
             const {
                 orderBy = "id",
-                ascending = "false",
+                ascending = false,
                 search = "",
-                deleted = "false",
-                paginated = "true",
+                deleted = false,
+                paginated = true,
                 page = "1",
                 perPage = "10",
             } = request.query;
 
             const params: FindProductRequest = {
                 orderBy: orderBy as string,
-                ascending: ascending === "true",
+                ascending: ascending,
                 search: search as string,
-                deleted: deleted === "true",
-                paginated: paginated === "true",
+                deleted: deleted,
+                paginated: paginated,
                 page: parseInt(page as string),
                 perPage: parseInt(perPage as string),
             };
 
-            const result = await service.find(params);
+            const result: FindProductResponse = await service.find(params);
+
             response.status(200).json({ status: "success", ...result });
         } catch (err) {
             logger.error("Error fetching products", err);
@@ -92,14 +93,15 @@ productRoutes.get(
 
             const params: FindProductRequest = {
                 orderBy: request.query.orderBy as string || "id",
-                ascending: request.query.ascending === "true",
+                ascending: request.query.ascending,
                 search: request.query.search as string || "",
-                deleted: request.query.deleted === "true",
-                paginated: request.query.paginated === "true",
-                page: parseInt(request.query.page as string) || 1,
-                perPage: parseInt(request.query.perPage as string) || 10,
+                deleted: request.query.deleted,
+                paginated: request.query.paginated,
+                page: request.query.page || 1,
+                perPage: request.query.perPage || 10,
             };
-            const serviceResponse = await service.getByCategorySlug(categorySlug, params);
+            const serviceResponse: FindProductResponse = await service.getByCategorySlug(categorySlug, params);
+
 
             response.status(200).json({ status: "success", products: serviceResponse.products, params, categorySlug });
         } catch (err) {
@@ -142,9 +144,9 @@ productRoutes.put(
         try {
             const productId = request.params.id;
             const productData = request.body;
-            const updatedProduct = await service.update(ObjectId.createFromHexString(productId), productData);
+            await service.update(ObjectId.createFromHexString(productId), productData);
 
-            response.status(200).json({ status: "success", product: updatedProduct });
+            response.status(204).json({ status: "success" });
         } catch (err) {
             logger.error("Error updating product", err);
             response.status(400).json({ status: "error" } as any);

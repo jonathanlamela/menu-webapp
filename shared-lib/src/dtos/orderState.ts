@@ -1,6 +1,6 @@
-import { PaginationParams, GenericResponse } from "dtos/common";
 import { ObjectId } from "mongodb";
-import { OrderState } from "types";
+import { OrderState } from "../types";
+import { GenericResponse, PaginationParams } from "./common";
 
 // OrderState
 

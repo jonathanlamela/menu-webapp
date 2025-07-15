@@ -11,7 +11,7 @@ export type Category = {
 export type Product = {
     id?: ObjectId;
     name: string;
-    categoryId?: ObjectId;
+    categoryId?: ObjectId | null | string;
     price: number;
     descriptionShort?: string;
     deleted?: boolean;

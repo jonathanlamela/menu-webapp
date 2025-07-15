@@ -2,7 +2,7 @@ import express from "express";
 import { ObjectId } from "mongodb";
 import CarrierService from "../services/carrier";
 import validateRequest from "../utils/validators/validateRequest";
-import { CreateCarrierRequest, CreateCarrierResponse, DeleteCarrierResponse, FindCarrierRequest, FindCarrierResponse, UpdateCarrierRequest, UpdateCarrierResponse } from "@shared/dtos/carrier";
+import { CreateCarrierRequest, CreateCarrierResponse, DeleteCarrierResponse, FindCarrierRequest, FindCarrierResponse, UpdateCarrierRequest, UpdateCarrierResponse } from "shared/dtos/carrier";
 import { postCarrier, putCarrier } from "../utils/validators/bodyValidators";
 import logger from "../utils/logger";
 import { TypedRequest, TypedResponse } from "../types";
@@ -17,10 +17,10 @@ carrierRoutes.get("/", async (
     try {
         const {
             orderBy = "id",
-            ascending = "false",
+            ascending = false,
             search = "",
-            deleted = "false",
-            paginated = "true",
+            deleted = false,
+            paginated = true,
             page = "1",
             perPage = "10",
         } = request.query;
@@ -28,15 +28,17 @@ carrierRoutes.get("/", async (
 
         const params: FindCarrierRequest = {
             orderBy: orderBy as string,
-            ascending: ascending === "true",
+            ascending: ascending === true,
             search: search as string,
-            deleted: deleted === "true",
-            paginated: paginated === "true",
+            deleted: deleted === true,
+            paginated: paginated === true,
             page: parseInt(page as string),
             perPage: parseInt(perPage as string),
         }
 
         const serviceResponse = await service.find(params);
+
+
         response.status(200).json({ status: "success", ...serviceResponse });
     } catch (err) {
         logger.error("Error fetching carriers", err);
@@ -67,10 +69,10 @@ carrierRoutes.post(
     "/",
     validateRequest(postCarrier),
     async (
-        request: TypedRequest<CreateCarrierRequest, {}>,
+        request: TypedRequest<{}, CreateCarrierRequest, {}>,
         response: TypedResponse<CreateCarrierResponse>
     ) => {
-        const data = request.body as CreateCarrierRequest;
+        const data = request.body;
         const service = new CarrierService();
         try {
             const serviceResponse = await service.create(data);
@@ -87,15 +89,13 @@ carrierRoutes.put(
     "/:id",
     validateRequest(putCarrier),
     async (
-        request: TypedRequest<UpdateCarrierRequest, { id: string }>,
+        request: TypedRequest<{}, UpdateCarrierRequest, { id: string }>,
         response: TypedResponse<UpdateCarrierResponse>
     ) => {
         const data = request.body as UpdateCarrierRequest;
         const service = new CarrierService();
         try {
-            if (request.file) {
-                data.image = request.file;
-            }
+
             await service.update(ObjectId.createFromHexString(request.params!.id), data);
             response.status(202).json({ status: "success" });
         } catch (err) {

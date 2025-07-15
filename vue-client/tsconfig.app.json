@@ -11,7 +11,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@shared/*": ["../shared-lib/src/*"]
+      "shared/*": ["../shared-lib/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]

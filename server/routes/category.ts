@@ -3,7 +3,7 @@ import CategoryService from "../services/category";
 import validateRequest from "../utils/validators/validateRequest";
 import { postCategory, putCategory } from "../utils/validators/bodyValidators";
 import { ObjectId } from "mongodb";
-import { FindCategoryRequest, CreateCategoryRequest, UpdateCategoryRequest, FindCategoryResponse, CreateCategoryResponse, GetCategoryResponse, UpdateCategoryResponse, DeleteCategoryResponse } from "@shared/dtos/category";
+import { FindCategoryRequest, CreateCategoryRequest, UpdateCategoryRequest, FindCategoryResponse, CreateCategoryResponse, GetCategoryResponse, UpdateCategoryResponse, DeleteCategoryResponse } from "shared/dtos/category";
 import logger from "../utils/logger";
 
 import { TypedRequest, TypedResponse } from "../types";
@@ -21,20 +21,20 @@ categoryRoutes.get("/",
         try {
             const {
                 orderBy = "id",
-                ascending = "false",
+                ascending = false,
                 search = "",
-                deleted = "false",
-                paginated = "true",
+                deleted = false,
+                paginated = true,
                 page = "1",
                 perPage = "10",
             } = request.query;
 
             const params: FindCategoryRequest = {
                 orderBy: orderBy as string,
-                ascending: ascending === "true",
+                ascending: ascending === true,
                 search: search as string,
-                deleted: deleted === "true",
-                paginated: paginated === "true",
+                deleted: deleted === true,
+                paginated: paginated === true,
                 page: parseInt(page as string),
                 perPage: parseInt(perPage as string),
             }

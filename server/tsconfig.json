@@ -9,8 +9,9 @@
     "moduleResolution": "nodenext",
     "module": "nodenext",
     "isolatedModules": true,
+    "baseUrl": ".",
     "paths": {
-      "@shared/*": ["../shared-lib/src/*"]
+      "shared/*": ["../shared-lib/src/*"]
     }
   }
 }

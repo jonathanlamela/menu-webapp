@@ -1,6 +1,6 @@
-import { PaginationParams, GenericResponse } from "dtos/common";
 import { ObjectId } from "mongodb";
-import { Product, Category } from "types";
+import { Product, Category } from "../types";
+import { PaginationParams, GenericResponse } from "./common";
 
 // ProductWithCategory
 export type ProductWithCategory = Product & {
@@ -18,9 +18,8 @@ export type GetProductsByCategorySlugParams = PaginationParams & {
 export type GetProductsByCategoryIdParams = PaginationParams & {
     categoryId: ObjectId;
 };
-export type GetProductsByCategorySlugRequest = {
+export type GetProductsByCategorySlugRequest = FindProductRequest & {
     categorySlug: string;
-    params: GetProductsByCategorySlugParams;
 };
 export type GetProductsByCategoryIdRequest = {
     categoryId: ObjectId;
@@ -39,9 +38,9 @@ export type GetProductByIdResponse = GenericResponse & {
     product: ProductWithCategory;
 };
 export type GetProductsByCategorySlugResponse = GenericResponse & {
-    products: ProductWithCategory[];
-    params: GetProductsByCategorySlugParams;
-    categorySlug: string;
+    products?: ProductWithCategory[];
+    params?: FindProductRequest;
+    categorySlug?: string;
 };
 export type GetProductsByCategoryIdResponse = GenericResponse & {
     products: ProductWithCategory[];

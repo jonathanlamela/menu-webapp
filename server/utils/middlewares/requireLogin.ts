@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { TypedResponse } from '../../types';
-import { GenericResponse } from '@shared/dtos/common';
+import { GenericResponse } from 'shared/dtos/common';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 

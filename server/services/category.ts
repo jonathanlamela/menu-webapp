@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "../utils/db"
 
-import { CreateCategoryRequest, UpdateCategoryRequest, FindCategoryRequest, FindCategoryResponse, CreateCategoryResponse, UpdateCategoryResponse, DeleteCategoryResponse, GetCategoryResponse } from "@shared/dtos/category";
+import { CreateCategoryRequest, UpdateCategoryRequest, FindCategoryRequest, FindCategoryResponse, CreateCategoryResponse, UpdateCategoryResponse, DeleteCategoryResponse, GetCategoryResponse } from "shared/dtos/category";
 
 import slugify from "slugify";
 import path from "path";
 import fs from "fs";
-import { Category } from "@shared/types";
+import { Category } from "shared/types";
 
 export default class CategoryService {
 
@@ -50,7 +50,7 @@ export default class CategoryService {
             {
                 $set: {
                     name: data.name,
-                    slug: slugify(data.name, { lower: true })
+                    slug: slugify(data.name!, { lower: true })
                 }
             }
         );
@@ -88,7 +88,7 @@ export default class CategoryService {
     async getById(id: ObjectId): Promise<GetCategoryResponse> {
         const db = await getDb();
         const category = await db.collection<Category>("categories").findOne({ _id: id });
-        return { category, }; // tipizzato come GetCategoryResponse
+        return { category }; // tipizzato come GetCategoryResponse
     }
 
     async getBySlug(slug: string): Promise<GetCategoryResponse> {

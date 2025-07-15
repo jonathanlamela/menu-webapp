@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "../utils/db"
-import { Carrier } from "@shared/types";
+import { Carrier } from "shared/types";
 
-import { CreateCarrierRequest, CreateCarrierResponse, DeleteCarrierResponse, FindCarrierRequest, FindCarrierResponse, GetCarrierByIdResponse, UpdateCarrierRequest, UpdateCarrierResponse } from "@shared/dtos/carrier";
+import { CreateCarrierRequest, CreateCarrierResponse, FindCarrierRequest, FindCarrierResponse, GetCarrierByIdResponse, UpdateCarrierRequest } from "shared/dtos/carrier";
 
 export default class CarrierService {
 
@@ -13,6 +13,8 @@ export default class CarrierService {
             deleted: false,
             costs: data.costs
         });
+
+
 
         if (documentCreated.acknowledged) {
             const _id = documentCreated.insertedId;

@@ -3,9 +3,9 @@ import { getDb } from "../utils/db";
 const request = require("supertest")
 import app from "../app";
 
-import { Category } from "@shared/types";
+import { Category } from "shared/types";
 import { describe, expect, beforeAll, test, afterAll } from 'vitest';
-import { FindCategoryResponse } from "@shared/dtos/category";
+import { FindCategoryResponse } from "shared/dtos/category";
 import { Db } from "mongodb";
 
 
