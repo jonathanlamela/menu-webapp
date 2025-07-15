@@ -3,10 +3,10 @@
 // Pagination & Find
 export type PaginationParams = {
     orderBy: string;
-    ascending: boolean;
+    ascending: boolean | string;
     search: string;
-    deleted: boolean;
-    paginated: boolean;
+    deleted: boolean | string;
+    paginated: boolean | string;
     page: number;
     perPage: number;
 };

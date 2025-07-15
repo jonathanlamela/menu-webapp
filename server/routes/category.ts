@@ -21,20 +21,20 @@ categoryRoutes.get("/",
         try {
             const {
                 orderBy = "id",
-                ascending = false,
+                ascending = "false",
                 search = "",
-                deleted = false,
-                paginated = true,
+                deleted = "false",
+                paginated = "true",
                 page = "1",
                 perPage = "10",
             } = request.query;
 
             const params: FindCategoryRequest = {
                 orderBy: orderBy as string,
-                ascending: ascending === true,
+                ascending: String(ascending) === "true",
                 search: search as string,
-                deleted: deleted === true,
-                paginated: paginated === true,
+                deleted: String(deleted) === "true",
+                paginated: String(paginated) === "true",
                 page: parseInt(page as string),
                 perPage: parseInt(perPage as string),
             }

@@ -2,6 +2,13 @@ import { ObjectId } from "mongodb";
 import { Product, Category } from "../types";
 import { PaginationParams, GenericResponse } from "./common";
 
+export type ProductDTO = {
+    name: string;
+    categoryId?: string;
+    price: number;
+    descriptionShort?: string;
+}
+
 // ProductWithCategory
 export type ProductWithCategory = Product & {
     category?: Category;
@@ -9,8 +16,8 @@ export type ProductWithCategory = Product & {
 
 // REQUESTS
 
-export type CreateProductRequest = Omit<Product, "id" | "deleted">;
-export type UpdateProductRequest = Partial<Omit<Product, "id" | "deleted">>;
+export type CreateProductRequest = ProductDTO;
+export type UpdateProductRequest = ProductDTO;
 
 export type GetProductsByCategorySlugParams = PaginationParams & {
     categorySlug: string;
@@ -52,8 +59,8 @@ export type GetProductsResponse = GenericResponse & {
     params: PaginationParams;
 };
 export type FindProductResponse = GenericResponse & {
-    products: ProductWithCategory[];
-    params: FindProductRequest;
+    products?: ProductWithCategory[];
+    params?: FindProductRequest;
     count: number;
     page?: number;
     totalPages?: number;

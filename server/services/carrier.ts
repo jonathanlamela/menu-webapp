@@ -96,8 +96,7 @@ export default class CarrierService {
                 count,
                 page: currentPage,
                 totalPages,
-                params,
-
+                params
             } as FindCarrierResponse;
         } else {
             let carriers = await collection.find(query).sort(sort).toArray();

@@ -2,11 +2,15 @@ import { ObjectId } from "mongodb";
 import { Carrier } from "../types";
 import { GenericResponse, PaginationParams } from "./common";
 
+export type CarrierDTO = {
+    name: string;
+    costs: number;
+};
 
 // Carrier
 
-export type CreateCarrierRequest = Omit<Carrier, "id" | "deleted">;
-export type UpdateCarrierRequest = Partial<Omit<Carrier, "id" | "deleted">>;
+export type CreateCarrierRequest = CarrierDTO;
+export type UpdateCarrierRequest = CarrierDTO;
 
 export type CreateCarrierResponse = GenericResponse & {
     id?: ObjectId;

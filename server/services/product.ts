@@ -12,7 +12,7 @@ export default class ProductService {
         const documentCreated = await db.collection<Product>("products").insertOne({
             name: model.name,
             price: model.price,
-            categoryId: ObjectId.createFromHexString(model.categoryId!.toString()),
+            categoryId: ObjectId.createFromHexString(model.categoryId!),
             descriptionShort: model.descriptionShort,
             deleted: false,
         });
@@ -27,10 +27,10 @@ export default class ProductService {
     // Update an existing product by ID
     async update(id: ObjectId, model: UpdateProductRequest) {
         const db = await getDb();
-        const updateFields: Partial<UpdateProductRequest> = {};
+        const updateFields: Partial<Product> = {};
         if (model.name != null) updateFields.name = model.name;
         if (model.price != null) updateFields.price = model.price;
-        if (model.categoryId != null) updateFields.categoryId = ObjectId.createFromHexString(model.categoryId.toString());
+        if (model.categoryId != null) updateFields.categoryId = ObjectId.createFromHexString(model.categoryId!);
         if (model.descriptionShort != null) updateFields.descriptionShort = model.descriptionShort;
 
         const documentUpdated = await db.collection<Product>("products").updateOne(

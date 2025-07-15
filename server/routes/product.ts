@@ -30,20 +30,20 @@ productRoutes.get(
         try {
             const {
                 orderBy = "id",
-                ascending = false,
+                ascending = "false",
                 search = "",
-                deleted = false,
-                paginated = true,
+                deleted = "false",
+                paginated = "true",
                 page = "1",
                 perPage = "10",
             } = request.query;
 
             const params: FindProductRequest = {
                 orderBy: orderBy as string,
-                ascending: ascending,
+                ascending: String(ascending) === "true",
                 search: search as string,
-                deleted: deleted,
-                paginated: paginated,
+                deleted: String(deleted) === "true",
+                paginated: String(paginated) === "true",
                 page: parseInt(page as string),
                 perPage: parseInt(perPage as string),
             };

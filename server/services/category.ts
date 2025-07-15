@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "../utils/db"
 
-import { CreateCategoryRequest, UpdateCategoryRequest, FindCategoryRequest, FindCategoryResponse, CreateCategoryResponse, UpdateCategoryResponse, DeleteCategoryResponse, GetCategoryResponse } from "shared/dtos/category";
+import { CreateCategoryRequest, UpdateCategoryRequest, FindCategoryRequest, FindCategoryResponse, CreateCategoryResponse, GetCategoryResponse } from "shared/dtos/category";
 
 import slugify from "slugify";
 import path from "path";

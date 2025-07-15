@@ -2,10 +2,15 @@ import { ObjectId } from "mongodb";
 import { OrderState } from "../types";
 import { GenericResponse, PaginationParams } from "./common";
 
+export type OrderStateDTO = {
+    name: string;
+    badgeColor?: string;
+};
+
 // OrderState
 
-export type CreateOrderStateRequest = Omit<OrderState, "id" | "deleted">;
-export type UpdateOrderStateRequest = Partial<Omit<OrderState, "id" | "deleted">>;
+export type CreateOrderStateRequest = OrderStateDTO;
+export type UpdateOrderStateRequest = OrderStateDTO;
 
 export type CreateOrderStateResponse = GenericResponse & {
     orderState: OrderState;

@@ -2,13 +2,15 @@ import { ObjectId } from "mongodb";
 import { Category } from "../types";
 import { PaginationParams, GenericResponse } from "./common";
 
-
+export type CategoryDTO = {
+    name: string;
+}
 
 // Request types
-export type CreateCategoryRequest = Omit<Category, "id" | "slug" | "deleted"> & {
+export type CreateCategoryRequest = CategoryDTO & {
     image?: Express.Multer.File;
 };
-export type UpdateCategoryRequest = Partial<Omit<Category, "id" | "slug" | "deleted">> & {
+export type UpdateCategoryRequest = CategoryDTO & {
     image?: Express.Multer.File;
 };
 export type FindCategoryRequest = PaginationParams;
@@ -32,3 +34,4 @@ export type FindCategoryResponse = GenericResponse & {
     page?: number;
     totalPages?: number;
 };
+
