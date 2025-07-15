@@ -204,7 +204,7 @@ describe("Product API Tests", () => {
 
     test("should get products by category slug", async () => {
         const response: Response = await request(app)
-            .get(`/api/v1/products/byCategorySlug/pizze`)
+            .get(`/api/v1/products/?categorySlug=pizze`)
             .set("Accept", "application/json");
 
         const body = response.body as GetProductsResponse;

@@ -32,7 +32,7 @@ export type GetProductsByCategoryIdRequest = {
     categoryId: ObjectId;
     params: GetProductsByCategoryIdParams;
 };
-export type FindProductRequest = PaginationParams;
+export type FindProductRequest = { categorySlug?: string } & PaginationParams;
 
 // RESPONSES
 

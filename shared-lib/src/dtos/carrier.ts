@@ -7,25 +7,20 @@ export type CarrierDTO = {
     costs: number;
 };
 
-// Carrier
-
+// Requests
 export type CreateCarrierRequest = CarrierDTO;
 export type UpdateCarrierRequest = CarrierDTO;
+export type FindCarrierRequest = PaginationParams;
 
+//Response
 export type CreateCarrierResponse = GenericResponse & {
     id?: ObjectId;
 };
-
 export type UpdateCarrierResponse = GenericResponse;
-
 export type DeleteCarrierResponse = GenericResponse;
-
 export type GetCarrierByIdResponse = GenericResponse & {
-    carrier: Carrier;
+    carrier?: Carrier;
 };
-
-export type FindCarrierRequest = PaginationParams;
-
 export type FindCarrierResponse = GenericResponse & {
     carriers?: Carrier[];
     params?: FindCarrierRequest;

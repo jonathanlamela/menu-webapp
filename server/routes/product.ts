@@ -46,6 +46,7 @@ productRoutes.get(
                 paginated: String(paginated) === "true",
                 page: parseInt(page as string),
                 perPage: parseInt(perPage as string),
+                categorySlug: request.query.categorySlug,
             };
 
             const result: FindProductResponse = await service.find(params);
@@ -81,35 +82,6 @@ productRoutes.get(
     }
 );
 
-productRoutes.get(
-    "/byCategorySlug/:categorySlug",
-    async (
-        request: Request<GetProductsByCategorySlugRequest, {}, {}, FindProductRequest>,
-        response: Response<GetProductsByCategorySlugResponse>
-    ) => {
-        const service = new ProductService();
-        try {
-            const categorySlug = request.params.categorySlug;
-
-            const params: FindProductRequest = {
-                orderBy: request.query.orderBy as string || "id",
-                ascending: request.query.ascending,
-                search: request.query.search as string || "",
-                deleted: request.query.deleted,
-                paginated: request.query.paginated,
-                page: request.query.page || 1,
-                perPage: request.query.perPage || 10,
-            };
-            const serviceResponse: FindProductResponse = await service.getByCategorySlug(categorySlug, params);
-
-
-            response.status(200).json({ status: "success", products: serviceResponse.products, params, categorySlug });
-        } catch (err) {
-            logger.error("Error fetching products by category slug", err);
-            response.status(400).json({ status: "error" } as any);
-        }
-    }
-);
 
 productRoutes.post(
     "/",
