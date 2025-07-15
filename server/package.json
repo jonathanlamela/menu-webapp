@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "npx nodemon ./server.ts",
     "test": "cross-env NODE_ENV=test vitest",
+    "test:ui": "cross-env NODE_ENV=test vitest --ui",
     "coverage": "vitest run --coverage"
   },
   "keywords": [],

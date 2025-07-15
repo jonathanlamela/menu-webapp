@@ -14,8 +14,6 @@ export default class CarrierService {
             costs: data.costs
         });
 
-
-
         if (documentCreated.acknowledged) {
             const _id = documentCreated.insertedId;
             return { id: _id } as CreateCarrierResponse;
