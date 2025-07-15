@@ -99,9 +99,9 @@ productRoutes.get(
                 page: parseInt(request.query.page as string) || 1,
                 perPage: parseInt(request.query.perPage as string) || 10,
             };
-            const products = await service.getByCategorySlug(categorySlug, params);
+            const serviceResponse = await service.getByCategorySlug(categorySlug, params);
 
-            response.status(200).json({ status: "success", products, params, categorySlug });
+            response.status(200).json({ status: "success", products: serviceResponse.products, params, categorySlug });
         } catch (err) {
             logger.error("Error fetching products by category slug", err);
             response.status(400).json({ status: "error" } as any);
@@ -166,7 +166,7 @@ productRoutes.delete(
             await productService.delete(ObjectId.createFromHexString(request.params.id));
 
             // Implement delete logic here if needed
-            response.status(200).json({ status: "success" });
+            response.status(204).json({ status: "success" });
         } catch (err) {
             logger.error("Error deleting product", err);
             response.status(400).json({ status: "error" } as any);

@@ -4,19 +4,20 @@ const request = require("supertest")
 import app from "../app";
 
 import { describe, expect, beforeAll, test, afterAll } from 'vitest';
-import { Db } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import { Response } from "supertest";
-import { Product, Category as CategoryType } from "@shared/types";
+import { Product, Category } from "@shared/types";
 import { CreateProductResponse, GetProductByIdResponse, GetProductsResponse } from "@shared/dtos/product";
 import { CreateCategoryResponse } from "@shared/dtos/category";
+import { create } from "axios";
 
 
 
 describe("Product API Tests", () => {
 
     let db: Db;
-    let pizzeCategoryId: string;
-    let paniniCategoryId: string;
+    let pizzeCategoryId: ObjectId;
+    let paniniCategoryId: ObjectId;
 
     async function startMocking() {
         await cleanCategoryTable();
@@ -27,14 +28,16 @@ describe("Product API Tests", () => {
             .post("/api/v1/categories")
             .send({ name: "Pizze" })
             .set("Accept", "application/json");
-        pizzeCategoryId = (pizzeRes.body as CreateCategoryResponse).id;
+        var requestResponse = pizzeRes.body as CreateCategoryResponse;
+        pizzeCategoryId = ObjectId.createFromHexString(requestResponse.id);
 
         // Crea la categoria "Panini" e salva l'id globale
         const paniniRes: Response = await request(app)
             .post("/api/v1/categories")
             .send({ name: "Panini" })
             .set("Accept", "application/json");
-        paniniCategoryId = (paniniRes.body as CreateCategoryResponse).id;
+        var requestResponse = paniniRes.body as CreateCategoryResponse;
+        paniniCategoryId = ObjectId.createFromHexString(requestResponse.id);
 
         await request(app)
             .post("/api/v1/products")
@@ -136,7 +139,8 @@ describe("Product API Tests", () => {
             .post("/api/v1/products")
             .send(newProduct)
             .set("Accept", "application/json");
-        const id = (createRes.body as CreateProductResponse).product._id;
+        const createBody = createRes.body as CreateProductResponse;
+        const id = createBody.id;
 
         const response: Response = await request(app)
             .get(`/api/v1/products/${id}`)
@@ -160,7 +164,8 @@ describe("Product API Tests", () => {
             .post("/api/v1/products")
             .send(newProduct)
             .set("Accept", "application/json");
-        const id = (createRes.body as CreateProductResponse).insertedId;
+        const createBody = createRes.body as CreateProductResponse;
+        const id = createBody.id;
 
         const updatedData = { name: "Bufala Speciale", price: 12 };
         const response: Response = await request(app)
@@ -189,7 +194,8 @@ describe("Product API Tests", () => {
             .post("/api/v1/products")
             .send(newProduct)
             .set("Accept", "application/json");
-        const id = (createRes.body as CreateProductResponse).insertedId;
+        const createBody = createRes.body as CreateProductResponse;
+        const id = createBody.id;
 
         const response: Response = await request(app)
             .delete(`/api/v1/products/${id}`)

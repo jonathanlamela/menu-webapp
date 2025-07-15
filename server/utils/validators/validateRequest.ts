@@ -12,14 +12,14 @@ const validateRequest = (schema: yup.Schema) => async (req: Request, res: Respon
         return next();
     } catch (err) {
         if (err instanceof yup.ValidationError) {
-            return res.status(500).json({
+            return res.status(400).json({
                 status: "error",
                 message: "validation error",
                 type: err.name,
                 details: err.message
             });
         }
-        return res.status(500).json({ "status": "error", "message": "see server logs" })
+        return res.status(400).json({ "status": "error", "message": "see server logs" })
 
     }
 }
