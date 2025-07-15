@@ -7,9 +7,6 @@ import { Category } from "shared/types";
 import { describe, expect, beforeAll, test, afterAll } from 'vitest';
 import { CreateCategoryResponse, FindCategoryResponse } from "shared/dtos/category";
 import { Db, ObjectId } from "mongodb";
-import { b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
-
-
 
 describe("Category API Tests", () => {
 
@@ -17,7 +14,6 @@ describe("Category API Tests", () => {
 
     let pizzeCategoryId: ObjectId;
     let paniniCategoryId: ObjectId;
-
 
     async function startMocking() {
 
@@ -113,7 +109,6 @@ describe("Category API Tests", () => {
         const response = await request(app)
             .get(`/api/v1/categories/${pizzeCategoryId}`)
             .set("Accept", "application/json");
-
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty("category");
         expect(response.body.category.name).toBe("Pizze");
@@ -121,19 +116,15 @@ describe("Category API Tests", () => {
 
 
     test("should get a category slug", async () => {
-
         const response = await request(app)
             .get(`/api/v1/categories?slug=pizze`)
             .set("Accept", "application/json");
-
         var responseBody: FindCategoryResponse = response.body;
-
         expect(response.statusCode).toBe(200);
         expect(responseBody.categories).toHaveLength(1);
     });
 
     test("should update a category by id", async () => {
-
         const updatedData = { name: "Pizze" };
         const response = await request(app)
             .put(`/api/v1/categories/${pizzeCategoryId}`)
@@ -147,11 +138,9 @@ describe("Category API Tests", () => {
         const db = await getDb();
         const category = await db.collection<Category>("categories").insertOne({ name: "Antipasti" });
         const id = category.insertedId.toString();
-
         const response = await request(app)
             .delete(`/api/v1/categories/${id}`)
             .set("Accept", "application/json");
-
         expect(response.statusCode).toBe(204);
 
         // Optionally, check that the category is actually deleted
@@ -159,8 +148,5 @@ describe("Category API Tests", () => {
         expect(deleted).not.toBeNull();
         expect(deleted?.deleted).toBe(true);
     });
-
-
-
 
 });

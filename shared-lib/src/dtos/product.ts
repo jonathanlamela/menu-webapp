@@ -15,10 +15,8 @@ export type ProductWithCategory = Product & {
 };
 
 // REQUESTS
-
 export type CreateProductRequest = ProductDTO;
 export type UpdateProductRequest = ProductDTO;
-
 export type GetProductsByCategorySlugParams = PaginationParams & {
     categorySlug: string;
 };
@@ -35,7 +33,6 @@ export type GetProductsByCategoryIdRequest = {
 export type FindProductRequest = { categorySlug?: string } & PaginationParams;
 
 // RESPONSES
-
 export type CreateProductResponse = GenericResponse & {
     id: ObjectId;
 };
