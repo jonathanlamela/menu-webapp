@@ -6,11 +6,9 @@ import app from "../app";
 import { describe, expect, beforeAll, test, afterAll } from 'vitest';
 import { Db, ObjectId } from "mongodb";
 import { Response } from "supertest";
-import { Product, Category } from "@shared/types";
+import { Product } from "@shared/types";
 import { CreateProductResponse, GetProductByIdResponse, GetProductsResponse } from "@shared/dtos/product";
 import { CreateCategoryResponse } from "@shared/dtos/category";
-import { create } from "axios";
-
 
 
 describe("Product API Tests", () => {
