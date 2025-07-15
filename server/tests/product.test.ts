@@ -14,16 +14,12 @@ import { getDb } from "utils/db";
 describe("Product API Tests", () => {
     // --- PRODUCT TESTS ---
 
-    let db: Db;
-
     let pizzeCategoryId: ObjectId;
     let paniniCategoryId: ObjectId;
 
+    async function feedDb() {
 
-    async function startMocking() {
-
-        await cleanCategoryTable();
-        await cleanProductTable();
+        console.log("Feeding database with initial data...");
 
         // Crea la categoria "Pizze" e salva l'id globale
         const pizzeRes: Response = await request(app)
@@ -33,6 +29,8 @@ describe("Product API Tests", () => {
         var requestResponse = pizzeRes.body as CreateCategoryResponse;
         pizzeCategoryId = requestResponse.id!;
 
+        console.log("Pizze category created with ID:", pizzeCategoryId.toString());
+
         // Crea la categoria "Panini" e salva l'id globale
         const paniniRes: Response = await request(app)
             .post("/api/v1/categories")
@@ -41,8 +39,9 @@ describe("Product API Tests", () => {
         var requestResponse = paniniRes.body as CreateCategoryResponse;
         paniniCategoryId = requestResponse.id!;
 
+        console.log("Panini category created with ID:", paniniCategoryId.toString());
 
-        await request(app)
+        const createProductRequest1: Response = await request(app)
             .post("/api/v1/products")
             .send({
                 name: "Diavola",
@@ -52,8 +51,10 @@ describe("Product API Tests", () => {
             })
             .set("Accept", "application/json");
 
+        var productCreateResponse1 = createProductRequest1.body as CreateProductResponse;
+        console.log("Product created with ID:", productCreateResponse1.id);
 
-        await request(app)
+        const createProductRequest2: Response = await request(app)
             .post("/api/v1/products")
             .send({
                 name: "Panino Classico",
@@ -62,28 +63,14 @@ describe("Product API Tests", () => {
                 descriptionShort: "Prosciutto e formaggio"
             })
             .set("Accept", "application/json");
-    }
+        var productCreateResponse2 = createProductRequest2.body as CreateProductResponse;
+        console.log("Product created with ID:", productCreateResponse2.id);
 
-    async function cleanCategoryTable() {
-        try { await db.collection("categories").deleteMany({}); } catch { }
-    }
-
-    async function cleanProductTable() {
-        try { await db.collection("products").deleteMany({}); } catch { }
-    }
-
-    async function stopMocking() {
-        await cleanProductTable();
-        await cleanCategoryTable();
+        console.log("Database fed with initial data.");
     }
 
     beforeAll(async () => {
-        db = await getDb();
-        await startMocking();
-    });
-
-    afterAll(async () => {
-        await stopMocking();
+        await feedDb();
     });
 
     test("should create a new product", async () => {
@@ -255,4 +242,70 @@ describe("Product API Tests", () => {
         expect(responseBody).toHaveProperty("page");
     });
 
+    test("should return 400 if params are invalid (invalid page/perPage)", async () => {
+        const response: Response = await request(app)
+            .get("/api/v1/products?paginated=true&page=notanumber&perPage=notanumber")
+            .set("Accept", "application/json");
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.status).toBe("error");
+    });
+
+    test("should return 400 if params are invalid (negative page/perPage)", async () => {
+        const response: Response = await request(app)
+            .get("/api/v1/products?paginated=true&page=-1&perPage=-5")
+            .set("Accept", "application/json");
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.status).toBe("error");
+    });
+
+    test("should return 404 when getting a product with non-existent id", async () => {
+        const nonExistentId = "64b7f9c2e1b8c2a1f8e1b8c2"; // random ObjectId
+        const response: Response = await request(app)
+            .get(`/api/v1/products/${nonExistentId}`)
+            .set("Accept", "application/json");
+
+        expect(response.statusCode).toBe(404);
+        expect(response.body.status).toBe("error");
+    });
+
+    test("should return 400 when getting a product with invalid id format", async () => {
+        const invalidId = "ajejebrazorf";
+        const response: Response = await request(app)
+            .get(`/api/v1/products/${invalidId}`)
+            .set("Accept", "application/json");
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.status).toBe("error");
+    });
+
+    test("should return 400 when creating a product with invalid productData", async () => {
+        // Missing required fields: name, price, categoryId
+        const invalidProductData = {
+            descriptionShort: "Invalid product"
+        };
+        const response: Response = await request(app)
+            .post("/api/v1/products")
+            .send(invalidProductData)
+            .set("Accept", "application/json");
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.status).toBe("error");
+    });
+
+    test("should return 400 when updating a product with invalid id format", async () => {
+        const invalidId = "64b7f9c2e1b8c2a1f8e1b8c2";
+        const updatedData = { name: "Invalid Update", price: 15 };
+        const response: Response = await request(app)
+            .put(`/api/v1/products/${invalidId}`)
+            .send(updatedData)
+            .set("Accept", "application/json");
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.status).toBe("error");
+    });
 });
+
+
+

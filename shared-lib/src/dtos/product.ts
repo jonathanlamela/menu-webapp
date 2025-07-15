@@ -34,7 +34,7 @@ export type FindProductRequest = { categorySlug?: string } & PaginationParams;
 
 // RESPONSES
 export type CreateProductResponse = GenericResponse & {
-    id: ObjectId;
+    id?: ObjectId;
 };
 export type UpdateProductResponse = GenericResponse;
 export type DeleteProductResponse = GenericResponse;

@@ -19,8 +19,6 @@ const validateRequest = (schema: yup.Schema) => async (req: Request, res: Respon
                 details: err.message
             });
         }
-        return res.status(400).json({ "status": "error", "message": "see server logs" })
-
     }
 }
 

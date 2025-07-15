@@ -34,6 +34,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0",
+    "mongodb-memory-server": "^10.1.4",
     "multer": "^2.0.1",
     "shared-lib": "../shared-lib",
     "slugify": "^1.6.6",

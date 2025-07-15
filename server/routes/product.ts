@@ -8,8 +8,6 @@ import {
     FindProductRequest,
     FindProductResponse,
     GetProductByIdResponse,
-    GetProductsByCategorySlugRequest,
-    GetProductsByCategorySlugResponse,
     CreateProductRequest,
     CreateProductResponse,
     UpdateProductRequest,

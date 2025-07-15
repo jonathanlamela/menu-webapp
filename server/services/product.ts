@@ -46,7 +46,7 @@ export default class ProductService {
     // Soft-delete a product by setting deleted to true
     async delete(id: ObjectId) {
         const db = await getDb();
-        const documentDeleted = await db.collection<Product>("products").updateOne({
+        await db.collection<Product>("products").updateOne({
             _id: id
         }, {
             $set: {
