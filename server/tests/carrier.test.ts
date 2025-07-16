@@ -130,5 +130,29 @@ describe("Carrier API Tests", () => {
 
     });
 
+    test("UPDATE /api/v1/carriers/:id updates a carrier", async () => {
+        const listRes = await request(app).get("/api/v1/carriers");
+        expect(listRes.status).toBe(200);
+        const listBody: FindCarrierResponse = listRes.body;
+        expect(listBody.carriers).toBeDefined();
+        expect(listBody.carriers!.length).toBeGreaterThan(0);
+
+        const firstCarrier = listBody.carriers![0];
+        const id = firstCarrier._id;
+
+        const updatedData: CarrierDTO = { name: "UpdatedCarrier", costs: 5 };
+        const res = await request(app)
+            .put(`/api/v1/carriers/${id}`)
+            .send(updatedData);
+
+        expect(res.status).toBe(202);
+
+        // Verify update
+        const verifyRes = await request(app).get(`/api/v1/carriers/${id}`);
+        expect(verifyRes.status).toBe(200);
+        expect(verifyRes.body.carrier.name).toBe("UpdatedCarrier");
+        expect(verifyRes.body.carrier.costs).toBe(5);
+    });
+
 
 });

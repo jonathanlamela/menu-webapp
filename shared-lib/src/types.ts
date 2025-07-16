@@ -1,34 +1,31 @@
 import { ObjectId } from "mongodb";
 
-export type Category = {
+interface BaseModel {
     _id?: ObjectId;
-    name: string;
-    slug?: string;
-    imageUrl?: string;
     deleted?: boolean;
 }
 
-export type Product = {
-    _id?: ObjectId;
+export interface Category extends BaseModel {
+    name: string;
+    slug?: string;
+    imageUrl?: string;
+}
+
+export interface Product extends BaseModel {
     name: string;
     categoryId?: ObjectId;
     price: number;
     descriptionShort?: string;
-    deleted?: boolean;
 }
 
-export type OrderState = {
-    _id?: ObjectId;
+export interface OrderState extends BaseModel {
     name: string;
     badgeColor?: string;
-    deleted?: boolean;
-};
+}
 
-export type Carrier = {
-    _id?: ObjectId;
+export interface Carrier extends BaseModel {
     name: string;
     costs: number;
-    deleted?: boolean;
-};
+}
 
 

@@ -1,20 +1,22 @@
-import express from "express";
+import express, { Request } from "express";
 import { ObjectId } from "mongodb";
 import CarrierService from "../services/carrier";
 import validateRequest from "../utils/validators/validateRequest";
 import { CreateCarrierRequest, CreateCarrierResponse, DeleteCarrierResponse, FindCarrierRequest, FindCarrierResponse, UpdateCarrierRequest, UpdateCarrierResponse } from "shared/dtos/carrier";
-import { postCarrier, putCarrier } from "../utils/validators/bodyValidators";
+import { findCarriersValidator, postCarrierValidator, putCarrierValidator } from "../utils/validators/bodyValidators";
 import logger from "../utils/logger";
 import { TypedRequest, TypedResponse } from "../types";
 
 
 const carrierRoutes = express.Router()
 
-carrierRoutes.get("/", async (
-    request: TypedRequest<FindCarrierRequest, {}>,
-    response: TypedResponse<FindCarrierResponse>) => {
-    const service = new CarrierService();
-    try {
+carrierRoutes.get("/",
+    validateRequest(findCarriersValidator),
+    async (
+        request: Request,
+        response: TypedResponse<FindCarrierResponse>
+    ) => {
+
         const {
             orderBy = "id",
             ascending = "false",
@@ -24,7 +26,6 @@ carrierRoutes.get("/", async (
             page = "1",
             perPage = "10",
         } = request.query;
-
 
         const params: FindCarrierRequest = {
             orderBy: orderBy as string,
@@ -36,38 +37,29 @@ carrierRoutes.get("/", async (
             perPage: parseInt(perPage as string),
         }
 
+        const service = new CarrierService();
         const serviceResponse = await service.find(params);
-
-
         response.status(200).json({ status: "success", ...serviceResponse });
-    } catch (err) {
-        logger.error("Error fetching carriers", err);
-        response.status(400).json({ status: "error" });
-    }
-});
+
+    });
 
 carrierRoutes.get("/:id", async (
     request: TypedRequest<{}, { id: string }>,
     response: TypedResponse<FindCarrierResponse>
 ) => {
     const service = new CarrierService();
-    try {
-        const serviceResponse = await service.getById(ObjectId.createFromHexString(request.params.id));
-        if (serviceResponse.carrier && serviceResponse.carrier.deleted == false) {
-            response.status(200).json({ status: "success", ...serviceResponse });
-        } else {
-            response.status(404).json({ status: "error" });
-        }
-    } catch (err) {
-        logger.error("Error fetching carrier by ID", err);
-        response.status(400).json({ status: "error" });
+    const serviceResponse = await service.getById(ObjectId.createFromHexString(request.params.id));
+    if (serviceResponse.carrier && serviceResponse.carrier.deleted == false) {
+        response.status(200).json({ status: "success", ...serviceResponse });
+    } else {
+        response.status(404).json({ status: "error" });
     }
 });
 
 //TODO: Require user logged with admin role
 carrierRoutes.post(
     "/",
-    validateRequest(postCarrier),
+    validateRequest(postCarrierValidator),
     async (
         request: TypedRequest<{}, CreateCarrierRequest, {}>,
         response: TypedResponse<CreateCarrierResponse>
@@ -87,7 +79,7 @@ carrierRoutes.post(
 //TODO: Require user logged with admin role
 carrierRoutes.put(
     "/:id",
-    validateRequest(putCarrier),
+    validateRequest(putCarrierValidator),
     async (
         request: TypedRequest<{}, UpdateCarrierRequest, { id: string }>,
         response: TypedResponse<UpdateCarrierResponse>
@@ -112,13 +104,8 @@ carrierRoutes.delete(
         response: TypedResponse<DeleteCarrierResponse>
     ) => {
         const service = new CarrierService();
-        try {
-            await service.delete(ObjectId.createFromHexString(request.params.id));
-            response.status(202).json({ status: "success" });
-        } catch (err) {
-            logger.error("Error deleting carrier", err);
-            response.status(400).json({ status: "error" });
-        }
+        await service.delete(ObjectId.createFromHexString(request.params.id));
+        response.status(202).json({ status: "success" });
     }
 );
 

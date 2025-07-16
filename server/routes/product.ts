@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import ProductService from "../services/product";
 import { ObjectId } from "mongodb";
 import validateRequest from "../utils/validators/validateRequest";
-import { findProducts, getProductById, postProduct, putProduct } from "../utils/validators/bodyValidators";
+import { findProductsValidator, getProductByIdValidator, postProductValidator, putProductValidator } from "../utils/validators/bodyValidators";
 import logger from "../utils/logger";
 import {
     FindProductRequest,
@@ -20,65 +20,53 @@ const productRoutes = express.Router();
 
 productRoutes.get(
     "/",
-    validateRequest(findProducts),
+    validateRequest(findProductsValidator),
     async (
         request: Request<{}, FindProductResponse, {}, any>,
         response: Response<FindProductResponse>
     ) => {
-        const service = new ProductService();
-        try {
-            const {
-                orderBy = "id",
-                ascending = "false",
-                search = "",
-                deleted = "false",
-                paginated = "true",
-                page = "1",
-                perPage = "10",
-                categorySlug = null,
-            } = request.query;
+        const {
+            orderBy = "id",
+            ascending = "false",
+            search = "",
+            deleted = "false",
+            paginated = "true",
+            page = "1",
+            perPage = "10",
+            categorySlug = null,
+        } = request.query;
 
-            const params: FindProductRequest = {
-                orderBy: orderBy as string,
-                ascending: String(ascending) === "true",
-                search: search as string,
-                deleted: String(deleted) === "true",
-                paginated: String(paginated) === "true",
-                page: parseInt(page as string),
-                perPage: parseInt(perPage as string),
-                categorySlug: categorySlug || null,
-            };
+        const params: FindProductRequest = {
+            orderBy: orderBy as string,
+            ascending: String(ascending) === "true",
+            search: search as string,
+            deleted: String(deleted) === "true",
+            paginated: String(paginated) === "true",
+            page: parseInt(page as string),
+            perPage: parseInt(perPage as string),
+            categorySlug: categorySlug || null,
+        };
 
-            const result: FindProductResponse = await service.find(params);
+        const result: FindProductResponse = await new ProductService().find(params);
 
-            response.status(200).json({ status: "success", ...result });
-        } catch (err) {
-            logger.error("Error fetching products", err);
-            response.status(400).json({ status: "error" } as any);
-        }
+        response.status(200).json({ status: "success", ...result });
     }
 );
 
 productRoutes.get(
     "/:id",
-    validateRequest(getProductById),
+    validateRequest(getProductByIdValidator),
     async (
         request: Request<{ id: string }, GetProductByIdResponse>,
         response: Response<GetProductByIdResponse>
     ) => {
-        const service = new ProductService();
-        try {
-            const productId = request.params.id;
-            const product = await service.getById(ObjectId.createFromHexString(productId));
+        const productId = request.params.id;
+        const product = await new ProductService().getById(ObjectId.createFromHexString(productId));
 
-            if (product && product.deleted === false) {
-                response.status(200).json({ status: "success", product });
-            } else {
-                response.status(404).json({ status: "error" } as any);
-            }
-        } catch (err) {
-            logger.error("Error fetching product by ID", err);
-            response.status(400).json({ status: "error" } as any);
+        if (product && product.deleted === false) {
+            response.status(200).json({ status: "success", product });
+        } else {
+            response.status(404).json({ status: "error" } as any);
         }
     }
 );
@@ -86,7 +74,7 @@ productRoutes.get(
 
 productRoutes.post(
     "/",
-    validateRequest(postProduct),
+    validateRequest(postProductValidator),
     async (
         request: Request<{}, CreateProductResponse, CreateProductRequest>,
         response: Response<CreateProductResponse>
@@ -106,7 +94,7 @@ productRoutes.post(
 
 productRoutes.put(
     "/:id",
-    validateRequest(putProduct),
+    validateRequest(putProductValidator),
     async (
         request: Request<{
             id: string
@@ -135,17 +123,9 @@ productRoutes.delete(
         }>,
         response: Response<DeleteProductResponse>
     ) => {
-        try {
-            var productService = new ProductService()
-
-            await productService.delete(ObjectId.createFromHexString(request.params.id));
-
-            // Implement delete logic here if needed
-            response.status(204).json({ status: "success" });
-        } catch (err) {
-            logger.error("Error deleting product", err);
-            response.status(400).json({ status: "error" } as any);
-        }
+        await new ProductService().delete(ObjectId.createFromHexString(request.params.id));
+        // Implement delete logic here if needed
+        response.status(204).json({ status: "success" });
     }
 );
 

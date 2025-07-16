@@ -3,13 +3,13 @@ import * as yup from "yup";
 import { ObjectId } from "mongodb";
 
 
-export const postCategory = yup.object({
+export const postCategoryValidator = yup.object({
   body: yup.object({
     name: yup.string().required()
   }),
 }).required();
 
-export const putCategory = yup.object({
+export const putCategoryValidator = yup.object({
   body: yup.object({
     name: yup.string().required()
   }),
@@ -24,7 +24,7 @@ export const putCategory = yup.object({
 }).required();
 
 
-export const getProductById = yup.object({
+export const getProductByIdValidator = yup.object({
   params: yup.object({
     id: yup.string()
       .test(
@@ -35,17 +35,18 @@ export const getProductById = yup.object({
   })
 }).required();
 
-export const findProducts = yup.object({
+export const findProductsValidator = yup.object({
   query: yup.object({
     search: yup.string().optional(),
     deleted: yup.boolean().optional(),
     paginated: yup.boolean().optional(),
     page: yup.number().integer().min(1).optional(),
     perPage: yup.number().integer().min(1).optional(),
+    categorySlug: yup.string().optional(),
   })
 }).required();
 
-export const postProduct = yup.object({
+export const postProductValidator = yup.object({
   body: yup.object({
     name: yup.string().min(1, "name should be at least 1 character").required(),
     price: yup.number().typeError("invalid number type").required(
@@ -59,7 +60,7 @@ export const postProduct = yup.object({
   }),
 }).required();
 
-export const putProduct = yup.object({
+export const putProductValidator = yup.object({
   body: yup.object({
     name: yup.string().min(1, "name should be at least 1 character"),
     price: yup.number().typeError("invalid number type").min(
@@ -77,7 +78,17 @@ export const putProduct = yup.object({
   })
 }).required();
 
-export const postCarrier = yup.object({
+export const findCarriersValidator = yup.object({
+  query: yup.object({
+    search: yup.string().optional(),
+    deleted: yup.boolean().optional(),
+    paginated: yup.boolean().optional(),
+    page: yup.number().integer().min(1).optional(),
+    perPage: yup.number().integer().min(1).optional(),
+  })
+}).required();
+
+export const postCarrierValidator = yup.object({
   body: yup.object({
     name: yup.string().required(),
     costs: yup.number().typeError("invalid number").required().min(
@@ -87,7 +98,7 @@ export const postCarrier = yup.object({
   }),
 }).required();
 
-export const putCarrier = yup.object({
+export const putCarrierValidator = yup.object({
   body: yup.object({
     name: yup.string().min(1, "name should be at least 1 character").required(),
     costs: yup.number().typeError("invalid number").min(
