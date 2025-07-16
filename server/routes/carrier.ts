@@ -53,7 +53,7 @@ carrierRoutes.get("/:id", async (
     const service = new CarrierService();
     try {
         const serviceResponse = await service.getById(ObjectId.createFromHexString(request.params.id));
-        if (serviceResponse.carrier) {
+        if (serviceResponse.carrier && serviceResponse.carrier.deleted == false) {
             response.status(200).json({ status: "success", ...serviceResponse });
         } else {
             response.status(404).json({ status: "error" });
@@ -76,7 +76,7 @@ carrierRoutes.post(
         const service = new CarrierService();
         try {
             const serviceResponse = await service.create(data);
-            response.status(200).json({ status: "success", ...serviceResponse });
+            response.status(201).json({ status: "success", ...serviceResponse });
         } catch (err) {
             logger.error("Error creating carrier", err);
             response.status(400).json({ status: "error" });

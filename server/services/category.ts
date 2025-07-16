@@ -71,7 +71,6 @@ export default class CategoryService {
                     { $set: { imageUrl: imagePath } }
                 );
             }
-            // tipizzato come UpdateCategoryResponse
         } else {
             throw Error('unable to update category')
         }
@@ -79,7 +78,7 @@ export default class CategoryService {
 
     async delete(id: ObjectId) {
         const db = await getDb();
-        const result = await db.collection<Category>("categories").updateOne(
+        await db.collection<Category>("categories").updateOne(
             { _id: id },
             { $set: { deleted: true } }
         );

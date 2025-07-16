@@ -134,10 +134,11 @@ describe("Category API Tests", () => {
             .set("Accept", "application/json");
         expect(response.statusCode).toBe(204);
 
-        // Optionally, check that the category is actually deleted
-        const deleted = await db.collection<Category>("categories").findOne({ _id: category.insertedId });
-        expect(deleted).not.toBeNull();
-        expect(deleted?.deleted).toBe(true);
+        // Optionally, check that the category is actually deleted via API
+        const getResponse = await request(app)
+            .get(`/api/v1/categories/${id}`)
+            .set("Accept", "application/json");
+        expect(getResponse.statusCode).toBe(404);
     });
 
 });

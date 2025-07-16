@@ -56,7 +56,7 @@ categoryRoutes.get("/:id",
         const categoryService = new CategoryService();
         try {
             const serviceResponse = await categoryService.getById(ObjectId.createFromHexString(request.params.id));
-            if (serviceResponse.category) {
+            if (serviceResponse.category && serviceResponse.category.deleted == false) {
                 response.status(200).json({ status: "success", ...serviceResponse });
             } else {
                 response.status(404).json({ status: "error", error: "no category found" });

@@ -38,7 +38,7 @@ export default class ProductService {
             { $set: updateFields }
         );
 
-        if (!documentUpdated.acknowledged || documentUpdated.modifiedCount === 0) {
+        if (!documentUpdated.acknowledged) {
             throw Error('unable to update product');
         }
     }

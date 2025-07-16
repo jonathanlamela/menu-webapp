@@ -1,5 +1,7 @@
 
 import * as yup from "yup";
+import { ObjectId } from "mongodb";
+
 
 export const postCategory = yup.object({
   body: yup.object({
@@ -12,10 +14,36 @@ export const putCategory = yup.object({
     name: yup.string().required()
   }),
   params: yup.object({
-    id: yup.string().required()
+    id: yup.string()
+      .test(
+        "is-objectid",
+        "${path} is not a valid ObjectId",
+        value => value === undefined || ObjectId.isValid(value)
+      ).required()
   })
 }).required();
 
+
+export const getProductById = yup.object({
+  params: yup.object({
+    id: yup.string()
+      .test(
+        "is-objectid",
+        "${path} is not a valid ObjectId",
+        value => value === undefined || ObjectId.isValid(value)
+      ).required()
+  })
+}).required();
+
+export const findProducts = yup.object({
+  query: yup.object({
+    search: yup.string().optional(),
+    deleted: yup.boolean().optional(),
+    paginated: yup.boolean().optional(),
+    page: yup.number().integer().min(1).optional(),
+    perPage: yup.number().integer().min(1).optional(),
+  })
+}).required();
 
 export const postProduct = yup.object({
   body: yup.object({
@@ -40,7 +68,12 @@ export const putProduct = yup.object({
     ),
   }),
   params: yup.object({
-    id: yup.string().required()
+    id: yup.string()
+      .test(
+        "is-objectid",
+        "${path} is not a valid ObjectId",
+        value => value === undefined || ObjectId.isValid(value)
+      ).required()
   })
 }).required();
 
@@ -63,6 +96,11 @@ export const putCarrier = yup.object({
     ),
   }),
   params: yup.object({
-    id: yup.string().required()
+    id: yup.string()
+      .test(
+        "is-objectid",
+        "${path} is not a valid ObjectId",
+        value => value === undefined || ObjectId.isValid(value)
+      ).required()
   })
 }).required();

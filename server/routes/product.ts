@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import ProductService from "../services/product";
 import { ObjectId } from "mongodb";
 import validateRequest from "../utils/validators/validateRequest";
-import { postProduct, putProduct } from "../utils/validators/bodyValidators";
+import { findProducts, getProductById, postProduct, putProduct } from "../utils/validators/bodyValidators";
 import logger from "../utils/logger";
 import {
     FindProductRequest,
@@ -20,8 +20,9 @@ const productRoutes = express.Router();
 
 productRoutes.get(
     "/",
+    validateRequest(findProducts),
     async (
-        request: Request<{}, {}, FindProductResponse, FindProductRequest>,
+        request: Request<{}, FindProductResponse, {}, any>,
         response: Response<FindProductResponse>
     ) => {
         const service = new ProductService();
@@ -34,6 +35,7 @@ productRoutes.get(
                 paginated = "true",
                 page = "1",
                 perPage = "10",
+                categorySlug = null,
             } = request.query;
 
             const params: FindProductRequest = {
@@ -44,7 +46,7 @@ productRoutes.get(
                 paginated: String(paginated) === "true",
                 page: parseInt(page as string),
                 perPage: parseInt(perPage as string),
-                categorySlug: request.query.categorySlug,
+                categorySlug: categorySlug || null,
             };
 
             const result: FindProductResponse = await service.find(params);
@@ -59,6 +61,7 @@ productRoutes.get(
 
 productRoutes.get(
     "/:id",
+    validateRequest(getProductById),
     async (
         request: Request<{ id: string }, GetProductByIdResponse>,
         response: Response<GetProductByIdResponse>
@@ -68,7 +71,7 @@ productRoutes.get(
             const productId = request.params.id;
             const product = await service.getById(ObjectId.createFromHexString(productId));
 
-            if (product) {
+            if (product && product.deleted === false) {
                 response.status(200).json({ status: "success", product });
             } else {
                 response.status(404).json({ status: "error" } as any);

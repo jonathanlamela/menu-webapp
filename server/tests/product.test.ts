@@ -191,8 +191,7 @@ describe("Product API Tests", () => {
         const deletedRes: Response = await request(app)
             .get(`/api/v1/products/${id}`)
             .set("Accept", "application/json");
-        const deletedBody = deletedRes.body as GetProductByIdResponse;
-        expect(deletedBody.product.deleted).toBe(true);
+        expect(deletedRes.status).toBe(404);
     });
 
     test("should get products by category slug", async () => {
@@ -261,7 +260,7 @@ describe("Product API Tests", () => {
     });
 
     test("should return 404 when getting a product with non-existent id", async () => {
-        const nonExistentId = "64b7f9c2e1b8c2a1f8e1b8c2"; // random ObjectId
+        const nonExistentId = "64b7f9c2e1b8c2a1f8e1b8c2";
         const response: Response = await request(app)
             .get(`/api/v1/products/${nonExistentId}`)
             .set("Accept", "application/json");
@@ -294,7 +293,7 @@ describe("Product API Tests", () => {
         expect(response.body.status).toBe("error");
     });
 
-    test("should return 400 when updating a product with invalid id format", async () => {
+    test("should return 204 when updating a product with valid id but not exists", async () => {
         const invalidId = "64b7f9c2e1b8c2a1f8e1b8c2";
         const updatedData = { name: "Invalid Update", price: 15 };
         const response: Response = await request(app)
@@ -302,8 +301,7 @@ describe("Product API Tests", () => {
             .send(updatedData)
             .set("Accept", "application/json");
 
-        expect(response.statusCode).toBe(400);
-        expect(response.body.status).toBe("error");
+        expect(response.statusCode).toBe(204);
     });
 });
 
