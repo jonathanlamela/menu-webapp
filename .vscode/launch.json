@@ -2,12 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch server",
+      "name": "Launch backend",
       "type": "node",
       "request": "launch",
       "runtimeArgs": ["-r", "ts-node/register"],
-      "cwd": "${workspaceFolder}/server",
-      "args": ["${workspaceFolder}/server/app.ts"]
+      "cwd": "${workspaceFolder}/backend",
+      "args": ["${workspaceFolder}/backend/app.ts"]
     }
   ]
 }
