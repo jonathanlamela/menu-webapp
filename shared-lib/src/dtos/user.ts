@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+import { GenericResponse } from "./common";
 
 export type UserDTO = {
     email: string;
@@ -14,3 +16,7 @@ export type CreateUserRequest = {
     firstName: string;
     lastName: string;
 };
+
+export type CreateUserResponse = GenericResponse & {
+    id?: ObjectId;
+}

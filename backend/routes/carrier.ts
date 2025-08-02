@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import CarrierService from "../services/carrier";
 import validateRequest from "../utils/validators/validateRequest";
 import { CreateCarrierRequest, CreateCarrierResponse, DeleteCarrierResponse, FindCarrierRequest, FindCarrierResponse, UpdateCarrierRequest, UpdateCarrierResponse } from "shared/dtos/carrier";
-import { findCarriersValidator, postCarrierValidator, putCarrierValidator } from "../utils/validators/bodyValidators";
+import { findCarriersValidator, postCarrierValidator, putCarrierValidator } from "../utils/validators/carrier";
 import logger from "../utils/logger";
 import { TypedRequest, TypedResponse } from "../types";
 

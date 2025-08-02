@@ -1,18 +1,37 @@
 import express, { Request, Response } from "express";
+import UserService from "services/user";
+import { CreateUserRequest, CreateUserResponse } from "shared/dtos/user";
+import { TypedRequest, TypedResponse } from "types";
+import logger from "utils/logger";
+import { createUserValidator } from "utils/validators/user";
+import validateRequest from "utils/validators/validateRequest";
 
 
-const routes = express.Router()
+const router = express.Router()
 
-routes.get("/status", (request: Request, response: Response) => {
+router.get("/status", (_: Request, response: Response) => {
     response.json({ "status": "works" });
 })
 
-routes.post("/register", (request: Request, response: Response) => { });
+router.post("/register", validateRequest(createUserValidator), async (
+    request: TypedRequest<{}, CreateUserRequest, {}>,
+    response: TypedResponse<CreateUserResponse>) => {
+    try {
+        const serviceResponse = await new UserService()
+            .create(request.body);
+        response.status(201).json({ status: "success", ...serviceResponse });
+    } catch (err) {
+        logger.error("Error creating user", err);
+        response.status(400).json({ status: "error" });
+    }
+});
 
-routes.post("/updateUserInfo", (request: Request, response: Response) => { });
+router.post("/login", (request: Request, response: Response) => { });
 
-routes.post("/updateUserPassword", (request: Request, response: Response) => { });
+router.post("/update/profile", (request: Request, response: Response) => { });
 
-routes.delete("/delete", (request: Request, response: Response) => { });
+router.post("/update/password", (request: Request, response: Response) => { });
 
-export default routes;
+router.delete("/delete", (request: Request, response: Response) => { });
+
+export default router;

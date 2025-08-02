@@ -31,7 +31,7 @@ export interface Carrier extends BaseModel {
 
 export interface User extends BaseModel {
     email: string;
-    password: string;
+    passwordHash: string;
     firstName: string;
     lastName: string;
     role: string;

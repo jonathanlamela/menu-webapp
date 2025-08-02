@@ -1,7 +1,7 @@
 import express from "express";
 import CategoryService from "../services/category";
 import validateRequest from "../utils/validators/validateRequest";
-import { postCategoryValidator, putCategoryValidator } from "../utils/validators/bodyValidators";
+import { postCategoryValidator, putCategoryValidator } from "../utils/validators/category";
 import { ObjectId } from "mongodb";
 import { FindCategoryRequest, CreateCategoryRequest, UpdateCategoryRequest, FindCategoryResponse, CreateCategoryResponse, UpdateCategoryResponse, DeleteCategoryResponse } from "shared/dtos/category";
 import logger from "../utils/logger";

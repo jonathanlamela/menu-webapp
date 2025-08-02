@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import ProductService from "../services/product";
 import { ObjectId } from "mongodb";
 import validateRequest from "../utils/validators/validateRequest";
-import { findProductsValidator, getProductByIdValidator, postProductValidator, putProductValidator } from "../utils/validators/bodyValidators";
+import { findProductsValidator, getProductByIdValidator, postProductValidator, putProductValidator } from "../utils/validators/product";
 import logger from "../utils/logger";
 import {
     FindProductRequest,
