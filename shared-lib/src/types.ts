@@ -1,3 +1,4 @@
+import e from "express";
 import { ObjectId } from "mongodb";
 
 interface BaseModel {
@@ -28,4 +29,10 @@ export interface Carrier extends BaseModel {
     costs: number;
 }
 
-
+export interface User extends BaseModel {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+}
